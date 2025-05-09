@@ -13,26 +13,26 @@
 		<h2>Ditt neste match?</h2>
 
 		<p>Filtrer etter:</p>
-		<!-- https://www.w3schools.com/howto/howto_js_dropdown.asp -->
-		<div class="dropdown">
-			<button class="dropdown-botton">Kjønn</button>
-			<div id="gender-sort" class="dropdown-content">
-				<a href="#">Dame</a>
-				<a href="#">Mann</a>
+		<div id="match-filters">
+			<p>Velg kjønn:</p>
+			<div id="gender-sort">
+				<label>
+					<input type="radio" name="gender" value="female" /> Dame
+				</label>
+				<label>
+					<input type="radio" name="gender" value="male" /> Mann
+				</label>
 			</div>
-			<div class="dropdown">
-				<button class="dropdown-button">Alder</button>
-				<div id="age-sort" class="dropdown-content">
-					<a href="#">20-29 år</a>
-					<a href="#">30-39 år</a>
-					<a href="#">40-49 år</a>
-					<a href="#">50-59 år</a>
-					<a href="#">60-69 år</a>
-					<a href="#">70-79 år</a>
-					<a href="#">80-89 år</a>
-					<a href="#">90-99 år</a>
-				</div>
+
+			<p>Velg alder:</p>
+			<div id="age-sort">
+				<label for="min-age">Min alder:</label>
+				<input type="number" id="min-age" placeholder="F.eks. 20" />
+				<label for="max-age">Max alder:</label>
+				<input type="number" id="max-age" placeholder="F.eks. 30" />
 			</div>
+
+			<button id="apply-filter">Bruk filter</button>
 		</div>
 
 		<div id="match-suggestion">
