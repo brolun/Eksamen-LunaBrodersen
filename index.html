@@ -6,11 +6,42 @@
 		<title>Document</title>
 	</head>
 	<body>
-    <h1>Brukere</h1>
+		<h1>Love is in the air!</h1>
+
+		<h2>Din profil</h2>
+
+		<h2>Ditt neste match?</h2>
+
+		<p>Filtrer etter:</p>
+		<div class="dropdown">
+			<button class="dropdown-button">Alder</button>
+			<div id="age-sort" class="dropdown-content">
+				<a href="#">20-29 år</a>
+				<a href="#">30-39 år</a>
+				<a href="#">40-49 år</a>
+				<a href="#">50-59 år</a>
+				<a href="#">60-69 år</a>
+				<a href="#">70-79 år</a>
+				<a href="#">80-89 år</a>
+				<a href="#">90-99 år</a>
+			</div>
+		</div>
+		<div class="dropdown">
+			<button class="dropdown-botton">Kjønn</button>
+			<div id="gender-sort" class="dropdown-content">
+				<a href="#">Dame</a>
+				<a href="#">Mann</a>
+			</div>
+		</div>
+
+		<div id="match-suggestion"></div>
+
+		<h2>Dine favoritter</h2>
 		<ul id="user-list">
 			<!-- Oversikt over brukere legges inn her med JS -->
 		</ul>
-  <script type="module" src="index.js"></script>
+
+		<script type="module" src="index.js"></script>
 		<!-- Dette scriptet skal kun brukes første gang siden kjøres for å populere databasen. Deretter, kommenter det ut -->
 		<!-- <script type="module" src="/requests/populateDB.js"></script> -->
 	</body>
