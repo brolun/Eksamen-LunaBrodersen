@@ -8,10 +8,12 @@ function createUserCard(user) {
 	userCard.classList.add("user-card");
 
 	userCard.innerHTML = `
-    <img src="${user.picture.large}" alt="Profilbilde">
-            <h3>${user.name.first} ${user.name.last}</h3>
-              <p>${user.dob.age} år</p>
-              <p>${user.location.city}, ${user.location.country}</p>`;
+        <img src="${user.picture.large}" alt="Profilbilde">
+        <h3>${user.name.first} ${user.name.last}</h3>
+        <p>${user.dob.age} år</p>
+        <p>${user.location.city}, ${user.location.country}</p>
+        <button>Nei</button>
+        <button>Ja</button>`;
 
 	return userCard;
 }
