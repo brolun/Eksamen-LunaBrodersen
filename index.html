@@ -6,11 +6,45 @@
 		<title>Document</title>
 	</head>
 	<body>
-    <h1>Brukere</h1>
-		<ul id="user-list">
-			<!-- Oversikt over brukere legges inn her med JS -->
-		</ul>
-  <script type="module" src="index.js"></script>
+		<h1>Love is in the air!</h1>
+
+		<h2>Din profil</h2>
+
+		<h2>Ditt neste match?</h2>
+
+		<p>Filtrer etter:</p>
+		<div id="match-filters">
+			<p>Velg kjønn:</p>
+			<div id="gender-sort">
+				<label>
+					<input type="radio" name="gender" value="female" /> Dame
+				</label>
+				<label>
+					<input type="radio" name="gender" value="male" /> Mann
+				</label>
+			</div>
+
+			<p>Velg alder:</p>
+			<div id="age-sort">
+				<label for="min-age">Min alder:</label>
+				<input type="number" id="min-age" placeholder="F.eks. 20" />
+				<label for="max-age">Max alder:</label>
+				<input type="number" id="max-age" placeholder="F.eks. 30" />
+			</div>
+
+			<button id="apply-filter">Bruk filter</button>
+		</div>
+
+		<div id="match-suggestion">
+			<!-- Forslag til match legges inn her med JS -->
+		</div>
+
+		<h2>Dine favoritter</h2>
+		<div id="favorites">
+			<!-- Oversikt over favoritter legges inn her med JS -->
+		</div>
+
+		<script type="module" src="index.js"></script>
 		<!-- Dette scriptet skal kun brukes første gang siden kjøres for å populere databasen. Deretter, kommenter det ut -->
 		<!-- <script type="module" src="/requests/populateDB.js"></script> -->
 	</body>
