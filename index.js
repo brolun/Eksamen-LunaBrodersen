@@ -1,9 +1,16 @@
+// === IMPORT === //
+
 import { addProfile } from "./requests/POST.js";
+import { getProfiles } from "./requests/GET.js";
+
+// === VARIABLER === //
 
 const loginContainer = document.getElementById("login-container");
 const goToRegisterLink = document.getElementById("go-to-register");
 const registerContainer = document.getElementById("register-container");
 const goToLoginLink = document.getElementById("go-to-login");
+
+// === REGISTRERING === //
 
 document
 	.getElementById("new-user-form")
@@ -45,6 +52,38 @@ goToLoginLink.addEventListener("click", (event) => {
 	registerContainer.style.display = "none";
 	loginContainer.style.display = "block";
 });
+
+// === INNLOGGING === //
+
+document
+	.getElementById("login-form")
+	.addEventListener("submit", async (event) => {
+		event.preventDefault();
+
+		const username = document.getElementById("username").value;
+		const password = document.getElementById("password").value;
+
+		try {
+			const profiles = await getProfiles();
+			const matchingProfile = profiles.find(
+				(profile) =>
+					profile.username === username &&
+					profile.password === password
+			);
+			if (matchingProfile) {
+				alert("Innlogging vellykket!");
+				localStorage.setItem(
+					"loggedInUser",
+					JSON.stringify(matchingProfile)
+				);
+				window.location.href = "home.html";
+			} else {
+				alert("Feil brukernavn eller passord!");
+			}
+		} catch (error) {
+			alert("Kunne ikke logge inn. Prøv igjen senere.");
+		}
+	});
 
 goToRegisterLink.addEventListener("click", (event) => {
 	event.preventDefault();
