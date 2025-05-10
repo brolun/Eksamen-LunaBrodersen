@@ -2,7 +2,7 @@
 
 import { addFavorite } from "./requests/POST.js";
 import { getFavorites, getUsers } from "./requests/GET.js";
-import { updateUserStatus } from "./requests/PUT.js";
+import { updateProfile } from "./requests/PUT.js";
 import { deleteUser } from "./requests/DELETE.js";
 
 // === BRUKERKORT ===

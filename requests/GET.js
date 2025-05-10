@@ -30,4 +30,18 @@ async function getFavorites() {
 	}
 }
 
-export { getUsers, getFavorites };
+async function getProfiles() {
+	try {
+		const response = await fetch(`${crudUrl}/profiles`);
+		if (!response.ok) {
+			throw new Error("HTTP error! status:", response.status);
+		}
+		const profiles = await response.json();
+		return profiles;
+	} catch (error) {
+		console.error("Klarte ikke å hente profiler", error);
+		throw error;
+	}
+}
+
+export { getUsers, getFavorites, getProfiles };

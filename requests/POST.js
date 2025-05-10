@@ -22,7 +22,7 @@ async function addFavorite(user) {
 
 async function addProfile(user) {
 	try {
-		const response = await fetch(`${crudUrl}/profile`, {
+		const response = await fetch(`${crudUrl}/profiles`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
