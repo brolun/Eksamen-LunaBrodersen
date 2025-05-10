@@ -1,5 +1,5 @@
 import { addFavorite } from "./requests/POST.js";
-import { getUsers } from "./requests/GET.js";
+import { getFavorites, getUsers } from "./requests/GET.js";
 import { updateUserStatus } from "./requests/PUT.js";
 import { deleteUser } from "./requests/DELETE.js";
 
@@ -38,6 +38,36 @@ window.addEventListener("DOMContentLoaded", () => {
 	showPotentialMatch();
 });
 
+function createNoButton(user, userCard, category) {
+	const noButton = document.createElement("button");
+	noButton.textContent = "Nei";
+	noButton.classList.add("no-button");
+	noButton.addEventListener("click", () => {
+		deleteUser(user._id, category);
+		userCard.remove();
+	});
+	return noButton;
+}
+function createYesButton(user, userCard) {
+	const yesButton = document.createElement("button");
+	yesButton.textContent = "Ja";
+	yesButton.classList.add("yes-button");
+	yesButton.addEventListener("click", async () => {
+		try {
+			await addFavorite(user);
+			await deleteUser(user._id, "users");
+			userCard.remove();
+			showFavorites();
+		} catch (error) {
+			console.error(
+				"Klarte ikke å flytte brukeren til favoritter",
+				error
+			);
+		}
+	});
+	return yesButton;
+}
+
 function createUserCard(user, category = "users") {
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
@@ -45,9 +75,20 @@ function createUserCard(user, category = "users") {
         <img src="${user.picture.large}" alt="Profilbilde">
         <h3>${user.name.first} ${user.name.last}</h3>
         <p>${user.dob.age} år</p>
-        <p>${user.location.city}, ${user.location.country}</p>
-        <button class="no-button">Nei</button>
-        <button class="yes-button">Ja</button>`;
+        <p>${user.location.city}, ${user.location.country}</p>`;
+
+	if (category === "users") {
+		const noButton = createNoButton(user, userCard, "users");
+		const yesButton = createYesButton(user, userCard);
+		userCard.appendChild(noButton);
+		userCard.appendChild(yesButton);
+	}
+
+	if (category === "favorites") {
+		const noButton = createNoButton(user, userCard, "favorites");
+		userCard.appendChild(noButton);
+	}
+
 	return userCard;
 }
 
@@ -100,16 +141,18 @@ async function showPotentialMatch() {
 }
 
 async function showFavorites() {
-	const users = await getUsers();
-	if (!users || users.length === 0) {
+	const favorites = await getFavorites();
+	if (!favorites || favorites.length === 0) {
 		console.log("Ingen favoritter funnet.");
+		const favoriteList = document.getElementById("favorites");
+		favoriteList.innerHTML = "<p>Ingen favoritter funnet.</p>";
 		return;
 	}
-	console.log(users);
+	console.log("Favoritter:", favorites);
 	const favoriteList = document.getElementById("favorites");
 	favoriteList.innerHTML = "";
-	users.forEach((user) => {
-		const userCard = createUserCard(user);
+	favorites.forEach((user) => {
+		const userCard = createUserCard(user, "favorites");
 		favoriteList.appendChild(userCard);
 	});
 }

@@ -8,7 +8,7 @@ async function populateDatabase() {
 		console.log("Brukere hentet fra randomuser.me:", users);
 		for (const user of users) {
 			try {
-				const postResponse = await fetch(crudUrl, {
+				const postResponse = await fetch(`${crudUrl}/users`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
