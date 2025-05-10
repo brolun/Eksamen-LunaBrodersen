@@ -1,7 +1,7 @@
-import {} from "./requests/POST.js";
+import { addFavorite } from "./requests/POST.js";
 import { getUsers } from "./requests/GET.js";
-import {} from "./requests/PUT.js";
-import {} from "./requests/DELETE.js";
+import { updateUserStatus } from "./requests/PUT.js";
+import { deleteUser } from "./requests/DELETE.js";
 
 document.getElementById("apply-filter").addEventListener("click", () => {
 	const selectedGender = document.querySelector(
@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
 	showPotentialMatch();
 });
 
-function createUserCard(user) {
+function createUserCard(user, category = "users") {
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
 	userCard.innerHTML = `
@@ -46,8 +46,8 @@ function createUserCard(user) {
         <h3>${user.name.first} ${user.name.last}</h3>
         <p>${user.dob.age} år</p>
         <p>${user.location.city}, ${user.location.country}</p>
-        <button>Nei</button>
-        <button>Ja</button>`;
+        <button class="no-button">Nei</button>
+        <button class="yes-button">Ja</button>`;
 	return userCard;
 }
 

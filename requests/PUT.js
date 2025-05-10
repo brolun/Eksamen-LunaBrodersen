@@ -2,7 +2,7 @@ import { crudUrl } from "./auth.js";
 
 async function updateUserStatus(userId, status) {
 	try {
-		const response = await fetch(`${crudUrl}/${userId}`, {
+		const response = await fetch(`${crudUrl}/users/${userId}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -10,7 +10,7 @@ async function updateUserStatus(userId, status) {
 			body: JSON.stringify({ status: status }),
 		});
 		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+			throw new Error("HTTP error! status:", response.status);
 		}
 		console.log("Brukerstatus oppdatert:", userId, status);
 	} catch (error) {
