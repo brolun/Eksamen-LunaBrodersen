@@ -73,15 +73,42 @@ function createYesButton(user, userCard) {
 
 // === POTENSIELL MATCH ===
 
+function populateAgeRangeDropdown() {
+	const ageRangeSelect = document.getElementById("age-range");
+	ageRangeSelect.innerHTML = "";
+
+	const defaultOption = document.createElement("option");
+	defaultOption.value = "";
+	defaultOption.disabled = true;
+	defaultOption.selected = true;
+	defaultOption.textContent = "Aldersintervall";
+	ageRangeSelect.appendChild(defaultOption);
+
+	const ageRanges = [
+		{ min: 20, max: 29 },
+		{ min: 30, max: 39 },
+		{ min: 40, max: 49 },
+		{ min: 50, max: 59 },
+		{ min: 60, max: 69 },
+		{ min: 70, max: 79 },
+		{ min: 80, max: 89 },
+		{ min: 90, max: 99 },
+	];
+	ageRanges.forEach((range) => {
+		const option = document.createElement("option");
+		option.value = `${range.min}-${range.max}`;
+		option.textContent = `${range.min}-${range.max}`;
+		ageRangeSelect.appendChild(option);
+	});
+	const savedAgeRange = localStorage.getItem("ageRange");
+	if (savedAgeRange) {
+		ageRangeSelect.value = savedAgeRange;
+	}
+}
+
 function handleFilters() {
 	const genderRadios = document.querySelectorAll('input[name="gender"]');
-	const minAgeInput = document.getElementById("min-age");
-	const maxAgeInput = document.getElementById("max-age");
-
 	const selectedGender = localStorage.getItem("selectedGender") || "";
-	const minAge = localStorage.getItem("minAge") || "";
-	const maxAge = localStorage.getItem("maxAge") || "";
-
 	genderRadios.forEach((radio) => {
 		radio.checked = radio.value === selectedGender;
 		radio.addEventListener("change", (event) => {
@@ -90,16 +117,13 @@ function handleFilters() {
 		});
 	});
 
-	minAgeInput.value = minAge;
-	minAgeInput.addEventListener("input", (event) => {
-		localStorage.setItem("minAge", event.target.value);
-		showPotentialMatch();
-	});
-
-	maxAgeInput.value = maxAge;
-	maxAgeInput.addEventListener("input", (event) => {
-		localStorage.setItem("maxAge", event.target.value);
-		showPotentialMatch();
+	const ageRangeSelect = document.getElementById("age-range");
+	const ageRange = localStorage.getItem("ageRange") || "";
+	if (ageRange) {
+		ageRangeSelect.value = ageRange;
+	}
+	ageRangeSelect.addEventListener("change", (event) => {
+		localStorage.setItem("ageRange", event.target.value);
 	});
 }
 
@@ -114,14 +138,15 @@ async function showPotentialMatch() {
 	}
 
 	const selectedGender = localStorage.getItem("selectedGender");
-	const minAge = parseInt(localStorage.getItem("minAge"), 10);
-	const maxAge = parseInt(localStorage.getItem("maxAge"), 10);
-	if (!selectedGender || isNaN(minAge) || isNaN(maxAge)) {
+	const ageRange = localStorage.getItem("ageRange");
+
+	if (!selectedGender || !ageRange) {
 		potentialMatch.innerHTML =
 			"<p>Definer kjønn og alder for å se potensielle matcher.</p>";
 		return;
 	}
 
+	const [minAge, maxAge] = ageRange.split("-").map(Number);
 	const filteredUsers = users.filter(
 		(user) =>
 			user.gender === selectedGender &&
@@ -178,7 +203,10 @@ async function showFavorites() {
 // === INIT ===
 
 window.addEventListener("DOMContentLoaded", () => {
+	populateAgeRangeDropdown();
 	handleFilters();
-	showPotentialMatch();
 	showFavorites();
+	document.getElementById("apply-filter").addEventListener("click", () => {
+		showPotentialMatch();
+	});
 });
