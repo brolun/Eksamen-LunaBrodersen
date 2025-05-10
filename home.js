@@ -1,9 +1,10 @@
 // === IMPORT ===
 
-import { addFavorite, loginUser } from "./requests/POST.js";
+import { addFavorite } from "./requests/POST.js";
 import { getFavorites, getUsers, getProfile } from "./requests/GET.js";
 import { updateProfile } from "./requests/PUT.js";
 import { deleteUser } from "./requests/DELETE.js";
+import { toBase64, resizeImage } from "./requests/utils.js";
 
 // === BRUKERKORT ===
 
@@ -11,8 +12,18 @@ function createUserCard(user, category = "users") {
 	console.log("Oppretter brukerens kort for:", user);
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
+
+	let profilePicture;
+	if (category === "profiles") {
+		profilePicture =
+			user.profilePicture || "./assets/portrait-placeholder.png";
+	} else if (category === "users") {
+		profilePicture =
+			user.picture?.large || "./assets/portrait-placeholder.png";
+	}
+
 	userCard.innerHTML = `
- <img src="${user.picture?.large || "default-profile.png"}" alt="Profilbilde">
+  		<img src="${profilePicture}" alt="Profilbilde">
         <h3>${user.firstName || user.name.first} ${
 		user.lastName || user.name.last
 	}</h3>
@@ -20,6 +31,7 @@ function createUserCard(user, category = "users") {
         <p>${user.city || user.location.city}, ${
 		user.country || user.location.country
 	}</p>`;
+
 	if (category === "profiles") {
 		const editButton = createEditButton(user, userCard);
 		userCard.appendChild(editButton);
@@ -58,6 +70,8 @@ function createEditButton(user) {
 		document.getElementById("edit-country").value = user.country;
 		document.getElementById("edit-age").value = user.age;
 		document.getElementById("edit-gender").value = user.gender;
+		document.getElementById("edit-username").value = user.username;
+		document.getElementById("edit-password").value = user.password;
 
 		editForm.onsubmit = async (event) => {
 			event.preventDefault();
@@ -68,7 +82,25 @@ function createEditButton(user) {
 				country: document.getElementById("edit-country").value,
 				age: parseInt(document.getElementById("edit-age").value, 10),
 				gender: document.getElementById("edit-gender").value,
+				username: document.getElementById("edit-username").value,
+				password: document.getElementById("edit-password").value,
 			};
+
+			const profilePictureFile = document.getElementById(
+				"edit-profile-picture"
+			).files[0];
+			if (profilePictureFile) {
+				updatedData.profilePicture = await resizeImage(
+					profilePictureFile,
+					800,
+					800
+				);
+			} else {
+				updatedData.profilePicture = user.profilePicture;
+			}
+
+			console.log("Oppdaterte data som sendes til CRUD:", updatedData);
+
 			try {
 				await updateProfile(user._id, updatedData);
 				Object.assign(user, updatedData);

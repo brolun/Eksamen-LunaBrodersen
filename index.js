@@ -2,6 +2,7 @@
 
 import { addProfile, loginUser } from "./requests/POST.js";
 import { getProfile } from "./requests/GET.js";
+import { toBase64, resizeImage } from "./requests/utils.js";
 
 // === VARIABLER === //
 
@@ -26,7 +27,15 @@ document
 		const username = document.getElementById("new-username").value;
 		const password = document.getElementById("new-password").value;
 
-		const newUser = {
+		const profilePictureFile =
+			document.getElementById("profile-picture").files[0];
+		if (profilePictureFile) {
+			profilePicture = await resizeImage(profilePictureFile, 800, 800);
+		} else {
+			profilePicture = "./assets/portrait-placeholder.png";
+		}
+
+		const profileData = {
 			firstName,
 			lastName,
 			city,
@@ -38,7 +47,7 @@ document
 		};
 
 		try {
-			await addProfile(newUser);
+			await addProfile(profileData);
 			alert("Bruker opprettet!");
 			registerContainer.style.display = "none";
 			loginContainer.style.display = "block";
