@@ -1,7 +1,7 @@
 // === IMPORT === //
 
-import { addProfile } from "./requests/POST.js";
-import { getProfiles } from "./requests/GET.js";
+import { addProfile, loginUser } from "./requests/POST.js";
+import { getProfile } from "./requests/GET.js";
 
 // === VARIABLER === //
 
@@ -64,24 +64,19 @@ document
 		const password = document.getElementById("password").value;
 
 		try {
-			const profiles = await getProfiles();
-			const matchingProfile = profiles.find(
-				(profile) =>
-					profile.username === username &&
-					profile.password === password
+			const loggedInProfile = await getProfile({ username, password });
+			const profileId = sessionStorage.getItem("profileId");
+			console.log(
+				"Profil-ID hentet fra sessionStorage etter innlogging:",
+				profileId
 			);
-			if (matchingProfile) {
-				alert("Innlogging vellykket!");
-				localStorage.setItem(
-					"loggedInUser",
-					JSON.stringify(matchingProfile)
-				);
-				window.location.href = "home.html";
-			} else {
-				alert("Feil brukernavn eller passord!");
-			}
+			alert("Innlogging vellykket!");
+			console.log("Innlogget profil:", loggedInProfile);
+
+			window.location.href = "home.html";
 		} catch (error) {
-			alert("Kunne ikke logge inn. Prøv igjen senere.");
+			alert("Feil brukernavn eller passord!");
+			console.error(error);
 		}
 	});
 

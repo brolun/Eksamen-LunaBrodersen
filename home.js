@@ -1,13 +1,14 @@
 // === IMPORT ===
 
-import { addFavorite } from "./requests/POST.js";
-import { getFavorites, getUsers, getProfiles } from "./requests/GET.js";
+import { addFavorite, loginUser } from "./requests/POST.js";
+import { getFavorites, getUsers, getProfile } from "./requests/GET.js";
 import { updateProfile } from "./requests/PUT.js";
 import { deleteUser } from "./requests/DELETE.js";
 
 // === BRUKERKORT ===
 
 function createUserCard(user, category = "users") {
+	console.log("Oppretter brukerens kort for:", user);
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
 	userCard.innerHTML = `
@@ -60,7 +61,6 @@ function createEditButton(user) {
 
 		editForm.onsubmit = async (event) => {
 			event.preventDefault();
-
 			const updatedData = {
 				firstName: document.getElementById("edit-first-name").value,
 				lastName: document.getElementById("edit-last-name").value,
@@ -69,7 +69,6 @@ function createEditButton(user) {
 				age: parseInt(document.getElementById("edit-age").value, 10),
 				gender: document.getElementById("edit-gender").value,
 			};
-
 			try {
 				await updateProfile(user._id, updatedData);
 				Object.assign(user, updatedData);
@@ -82,13 +81,11 @@ function createEditButton(user) {
 				alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
 			}
 		};
-
 		document.getElementById("cancel-edit").addEventListener("click", () => {
 			editContainer.style.display = "none";
 			profileContainer.style.display = "block";
 		});
 	});
-
 	return editButton;
 }
 
@@ -136,20 +133,24 @@ function createYesButton(user, userCard) {
 // === BRUKERPROFIL ===
 
 async function showProfile() {
-	const loggedInUserJSON = localStorage.getItem("loggedInUser");
-	if (!loggedInUserJSON) {
-		console.error("Ingen bruker er logget inn.");
-		return;
+	try {
+		const loggedInProfile = await getProfile();
+		console.log("Innlogget profil:", loggedInProfile);
+		if (!loggedInProfile) {
+			console.error("Ingen profildata funnet.");
+			return;
+		}
+		const profileContainer = document.getElementById("profile");
+		if (!profileContainer) {
+			console.error("Elementet med id 'profile' finnes ikke.");
+			return;
+		}
+		const userCard = createUserCard(loggedInProfile, "profiles");
+		profileContainer.innerHTML = "";
+		profileContainer.appendChild(userCard);
+	} catch (error) {
+		console.error("Kunne ikke hente profildata:", error);
 	}
-	const loggedInUser = JSON.parse(loggedInUserJSON);
-	const profileContainer = document.getElementById("profile");
-	if (!profileContainer) {
-		console.error("Elementet med id 'profile' finnes ikke.");
-		return;
-	}
-	const userCard = createUserCard(loggedInUser, "profiles");
-	profileContainer.innerHTML = "";
-	profileContainer.appendChild(userCard);
 }
 
 // === FILTRERING === //
