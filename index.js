@@ -7,18 +7,32 @@ document.getElementById("apply-filter").addEventListener("click", () => {
 	const selectedGender = document.querySelector(
 		'input[name="gender"]:checked'
 	)?.value;
-	if (selectedGender) {
-		localStorage.setItem("selectedGender", selectedGender);
-	}
 	const minAge = document.getElementById("min-age").value;
 	const maxAge = document.getElementById("max-age").value;
-	localStorage.setItem("minAge", minAge);
-	localStorage.setItem("maxAge", maxAge);
+	setFilters(selectedGender, minAge, maxAge);
 	showPotentialMatch();
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-	const selectedGender = localStorage.getItem("selectedGender");
+	initializeFilters();
+	showPotentialMatch();
+	showFavorites();
+});
+
+function setFilters(selectedGender, minAge, maxAge) {
+	if (selectedGender) {
+		localStorage.setItem("selectedGender", selectedGender);
+	}
+	if (minAge) {
+		localStorage.setItem("minAge", minAge);
+	}
+	if (maxAge) {
+		localStorage.setItem("maxAge", maxAge);
+	}
+}
+
+function initializeFilters() {
+	const { selectedGender, minAge, maxAge } = getFilters();
 	if (selectedGender) {
 		const genderRadio = document.querySelector(
 			`input[name="gender"][value="${selectedGender}"]`
@@ -31,32 +45,30 @@ window.addEventListener("DOMContentLoaded", () => {
 			radio.checked = false;
 		});
 	}
+	document.getElementById("min-age").value = minAge || "";
+	document.getElementById("max-age").value = maxAge || "";
+}
 
-	const minAge = localStorage.getItem("minAge");
-	const maxAge = localStorage.getItem("maxAge");
-	if (minAge) {
-		document.getElementById("min-age").value = minAge;
-	} else {
-		document.getElementById("min-age").value = "";
-	}
-
-	if (maxAge) {
-		document.getElementById("max-age").value = maxAge;
-	} else {
-		document.getElementById("max-age").value = "";
-	}
-
-	showPotentialMatch();
-});
+function getFilters() {
+	const selectedGender = localStorage.getItem("selectedGender");
+	const minAge = parseInt(localStorage.getItem("minAge"), 10);
+	const maxAge = parseInt(localStorage.getItem("maxAge"), 10);
+	return { selectedGender, minAge, maxAge };
+}
 
 function createNoButton(user, userCard, category) {
 	const noButton = document.createElement("button");
 	noButton.textContent = "Nei";
 	noButton.classList.add("no-button");
-	noButton.addEventListener("click", () => {
-		deleteUser(user._id, category);
-		localStorage.removeItem("currentMatch");
-		userCard.remove();
+	noButton.addEventListener("click", async () => {
+		try {
+			await deleteUser(user._id, category);
+			userCard.remove();
+			localStorage.removeItem("currentMatch");
+			showPotentialMatch();
+		} catch (error) {
+			console.error(`Klarte ikke å slette bruker fra ${category}`, error);
+		}
 	});
 	return noButton;
 }
@@ -114,65 +126,84 @@ async function showPotentialMatch() {
 		return;
 	}
 
-	const selectedGender = localStorage.getItem("selectedGender");
-	const minAge = parseInt(document.getElementById("min-age").value, 10);
-	const maxAge = parseInt(document.getElementById("max-age").value, 10);
+	const { selectedGender, minAge, maxAge } = getFilters();
 
-	if (!selectedGender || isNaN(minAge) || isNaN(maxAge)) {
-		console.log("Kjønn og/eller alder er ikke definert.");
-		const potentialMatch = document.getElementById("match-suggestion");
-		potentialMatch.innerHTML =
-			"<p>Definer kjønn og alder for å se potensielle matcher.</p>";
+	if (!validateFilters(selectedGender, minAge, maxAge)) {
+		displayMessage("Definer kjønn og alder for å se potensielle matcher.");
 		return;
 	}
 
-	console.log("Valgt kjønn:", selectedGender);
-	console.log("Valgt aldersgruppe:", minAge, "-", maxAge);
+	let filteredUsers = filterUsers(users, selectedGender, minAge, maxAge);
 
-	let filteredUsers = users;
-
-	filteredUsers = filteredUsers.filter(
-		(user) => user.gender === selectedGender
-	);
-	filteredUsers = filteredUsers.filter(
-		(user) => user.dob.age >= minAge && user.dob.age <= maxAge
-	);
-
-	console.log("Filtrerte brukere:", filteredUsers);
-	const potentialMatch = document.getElementById("match-suggestion");
-	potentialMatch.innerHTML = "";
-
-	const savedUser = localStorage.getItem("currentMatch");
-	if (savedUser) {
-		const user = JSON.parse(savedUser);
-		const isUserValid =
-			user.gender === selectedGender &&
-			user.dob.age >= minAge &&
-			user.dob.age <= maxAge;
-
-		if (isUserValid) {
-			console.log("Viser lagret bruker fra localStorage.");
-			const userCard = createUserCard(user);
-			potentialMatch.appendChild(userCard);
-			return;
-		} else {
-			console.log("Lagret bruker samsvarer ikke med de nye kriteriene.");
-			localStorage.removeItem("currentMatch");
-		}
+	const savedUser = getSavedUser();
+	if (savedUser && isUserValid(savedUser, selectedGender, minAge, maxAge)) {
+		displayUser(savedUser);
+		return;
+	} else {
+		clearSavedUser();
 	}
 
 	if (filteredUsers.length === 0) {
-		const noMatchMessage = document.createElement("p");
-		noMatchMessage.textContent = "Ingen brukere matcher dine kriterier.";
-		potentialMatch.appendChild(noMatchMessage);
+		displayMessage("Ingen brukere matcher dine kriterier.");
 		return;
 	}
 
-	const randomIndex = Math.floor(Math.random() * filteredUsers.length);
-	const randomUser = filteredUsers[randomIndex];
-	localStorage.setItem("currentMatch", JSON.stringify(randomUser));
-	const userCard = createUserCard(randomUser);
+	const randomUser = selectRandomUser(filteredUsers);
+	saveUser(randomUser);
+	displayUser(randomUser);
+}
+
+// Funksjon for å validere filtrene
+function validateFilters(selectedGender, minAge, maxAge) {
+	return selectedGender && !isNaN(minAge) && !isNaN(maxAge);
+}
+
+// Funksjon for å filtrere brukere basert på kjønn og alder
+function filterUsers(users, selectedGender, minAge, maxAge) {
+	return users
+		.filter((user) => user.gender === selectedGender)
+		.filter((user) => user.dob.age >= minAge && user.dob.age <= maxAge);
+}
+
+// Funksjoner for å håndtere lagret bruker
+function getSavedUser() {
+	const savedUser = localStorage.getItem("currentMatch");
+	return savedUser ? JSON.parse(savedUser) : null;
+}
+
+function isUserValid(user, selectedGender, minAge, maxAge) {
+	return (
+		user.gender === selectedGender &&
+		user.dob.age >= minAge &&
+		user.dob.age <= maxAge
+	);
+}
+
+function clearSavedUser() {
+	localStorage.removeItem("currentMatch");
+}
+
+// Funksjoner for å velge og lagre bruker
+function selectRandomUser(users) {
+	const randomIndex = Math.floor(Math.random() * users.length);
+	return users[randomIndex];
+}
+
+function saveUser(user) {
+	localStorage.setItem("currentMatch", JSON.stringify(user));
+}
+
+// Funksjoner for å vise bruker eller melding i UI
+function displayUser(user) {
+	const potentialMatch = document.getElementById("match-suggestion");
+	potentialMatch.innerHTML = "";
+	const userCard = createUserCard(user);
 	potentialMatch.appendChild(userCard);
+}
+
+function displayMessage(message) {
+	const potentialMatch = document.getElementById("match-suggestion");
+	potentialMatch.innerHTML = `<p>${message}</p>`;
 }
 
 async function showFavorites() {
