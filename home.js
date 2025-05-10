@@ -1,7 +1,7 @@
 // === IMPORT ===
 
 import { addFavorite } from "./requests/POST.js";
-import { getFavorites, getUsers } from "./requests/GET.js";
+import { getFavorites, getUsers, getProfiles } from "./requests/GET.js";
 import { updateProfile } from "./requests/PUT.js";
 import { deleteUser } from "./requests/DELETE.js";
 
@@ -36,66 +36,57 @@ function createUserCard(user, category = "users") {
 	return userCard;
 }
 
-function createEditButton(user, userCard) {
+// === KNAPPER === //
+
+function createEditButton(user) {
 	const editButton = document.createElement("button");
 	editButton.textContent = "Rediger";
 	editButton.classList.add("edit-button");
 
-	editButton.addEventListener("click", async () => {
-		try {
-			// Hent nye verdier fra brukeren
-			const newFirstName = prompt(
-				"Skriv inn nytt fornavn:",
-				user.firstName
-			);
-			const newLastName = prompt(
-				"Skriv inn nytt etternavn:",
-				user.lastName
-			);
-			const newCity = prompt("Skriv inn ny by:", user.city);
-			const newCountry = prompt("Skriv inn nytt land:", user.country);
-			const newAge = parseInt(
-				prompt("Skriv inn ny alder:", user.age || user.dob.age),
-				10
-			);
-			const newGender = prompt("Skriv inn nytt kjønn:", user.gender);
+	editButton.addEventListener("click", () => {
+		const profileContainer = document.getElementById("profile");
+		const editContainer = document.getElementById("edit-profile-container");
+		const editForm = document.getElementById("edit-profile-form");
 
-			// Opprett et objekt med de oppdaterte dataene
+		profileContainer.style.display = "none";
+		editContainer.style.display = "block";
+
+		document.getElementById("edit-first-name").value = user.firstName;
+		document.getElementById("edit-last-name").value = user.lastName;
+		document.getElementById("edit-city").value = user.city;
+		document.getElementById("edit-country").value = user.country;
+		document.getElementById("edit-age").value = user.age;
+		document.getElementById("edit-gender").value = user.gender;
+
+		editForm.onsubmit = async (event) => {
+			event.preventDefault();
+
 			const updatedData = {
-				firstName: newFirstName,
-				lastName: newLastName,
-				city: newCity,
-				country: newCountry,
-				age: newAge,
-				gender: newGender,
+				firstName: document.getElementById("edit-first-name").value,
+				lastName: document.getElementById("edit-last-name").value,
+				city: document.getElementById("edit-city").value,
+				country: document.getElementById("edit-country").value,
+				age: parseInt(document.getElementById("edit-age").value, 10),
+				gender: document.getElementById("edit-gender").value,
 			};
 
-			// Kall updateProfile() for å oppdatere dataene i backend
-			await updateProfile(user._id, updatedData);
+			try {
+				await updateProfile(user._id, updatedData);
+				Object.assign(user, updatedData);
+				editContainer.style.display = "none";
+				profileContainer.style.display = "block";
+				showProfile();
+				alert("Profilen ble oppdatert!");
+			} catch (error) {
+				console.error("Klarte ikke å oppdatere profilen", error);
+				alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
+			}
+		};
 
-			// Oppdater brukerens kort i grensesnittet
-			user.firstName = newFirstName;
-			user.lastName = newLastName;
-			user.city = newCity;
-			user.country = newCountry;
-			user.age = newAge;
-			user.gender = newGender;
-
-			// Oppdater HTML for brukerens kort
-			userCard.innerHTML = `
-                <img src="${
-					user.picture?.large || "default-profile.png"
-				}" alt="Profilbilde">
-                <h3>${user.firstName} ${user.lastName}</h3>
-                <p>${user.age} år</p>
-                <p>${user.city}, ${user.country}</p>
-            `;
-			userCard.appendChild(editButton); // Legg til rediger-knappen igjen
-			alert("Profilen ble oppdatert!");
-		} catch (error) {
-			console.error("Klarte ikke å oppdatere profilen", error);
-			alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
-		}
+		document.getElementById("cancel-edit").addEventListener("click", () => {
+			editContainer.style.display = "none";
+			profileContainer.style.display = "block";
+		});
 	});
 
 	return editButton;
@@ -144,7 +135,7 @@ function createYesButton(user, userCard) {
 
 // === BRUKERPROFIL ===
 
-async function showUserProfile() {
+async function showProfile() {
 	const loggedInUserJSON = localStorage.getItem("loggedInUser");
 	if (!loggedInUserJSON) {
 		console.error("Ingen bruker er logget inn.");
@@ -293,7 +284,7 @@ async function showFavorites() {
 // === INIT ===
 
 window.addEventListener("DOMContentLoaded", () => {
-	showUserProfile();
+	showProfile();
 	populateAgeRangeDropdown();
 	handleFilters();
 	showFavorites();
