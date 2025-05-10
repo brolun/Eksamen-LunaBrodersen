@@ -1,4 +1,4 @@
-const endpoint = "9f1714865ec24ecd97524c02d332ace2"; // Erstatt med ny nøkkel når den utløper
+const endpoint = "2f327aef903b40539d1d7890946d87d6"; // Erstatt med ny nøkkel når den utløper
 const crudUrl = `https://crudcrud.com/api/${endpoint}`;
 const randomUserUrl = "https://randomuser.me/api/?results=4";
 
