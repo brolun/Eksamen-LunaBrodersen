@@ -371,15 +371,18 @@ async function showFavorites() {
 
 // === INIT ===
 
-window.addEventListener("DOMContentLoaded", () => {
-	const loggedInUser = localStorage.getItem("loggedInUser");
-	if (!loggedInUser) {
+window.addEventListener("DOMContentLoaded", async () => {
+	try {
+		const loggedInProfile = await getProfile();
+		if (!loggedInProfile) {
+			throw new Error("Ingen bruker er logget inn.");
+		}
+		showProfile();
+		populateAgeRangeDropdown();
+		handleFilters();
+		showFavorites();
+	} catch (error) {
 		alert("Du må være logget inn for å få tilgang til denne siden.");
 		window.location.href = "index.html";
-		return;
 	}
-	showProfile();
-	populateAgeRangeDropdown();
-	handleFilters();
-	showFavorites();
 });
