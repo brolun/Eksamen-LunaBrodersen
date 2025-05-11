@@ -162,6 +162,7 @@ function createFavoriteButton(user, userCard) {
 					newestFavorite,
 					"favorites"
 				);
+				document.getElementById("favorites").appendChild(favoriteCard);
 				notifyOfMutualMatch(newestFavorite, favoriteCard);
 			} else {
 				console.error("Ingen favoritter funnet etter opprettelse.");
@@ -370,7 +371,7 @@ async function showFavorites() {
 
 // === TILLEGGSFUNKSJON === //
 
-function notifyOfMutualMatch(favorite) {
+function notifyOfMutualMatch(favorite, userCard) {
 	const randomDelay = Math.floor(Math.random() * 10000) + 5000;
 
 	setTimeout(() => {
