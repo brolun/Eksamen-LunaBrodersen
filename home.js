@@ -64,89 +64,12 @@ function createEditButton(user) {
 		profileContainer.style.display = "none";
 		editContainer.style.display = "block";
 
-		document.getElementById("edit-first-name").value = user.firstName;
-		document.getElementById("edit-last-name").value = user.lastName;
-		document.getElementById("edit-city").value = user.city;
-		document.getElementById("edit-country").value = user.country;
-		document.getElementById("edit-age").value = user.age;
-		document.getElementById("edit-gender").value = user.gender;
-		document.getElementById("edit-username").value = user.username;
-		document.getElementById("edit-password").value = "";
-
-		const profilePicturePreview = document.getElementById(
-			"edit-profile-picture-preview"
-		);
-		console.log(
-			"Profilbilde som brukes i redigeringsskjemaet:",
-			user.profilePicture
-		);
-
-		if (
-			user.profilePicture &&
-			!user.profilePicture.startsWith("data:image/")
-		) {
-			profilePicturePreview.src = `data:image/jpeg;base64,${user.profilePicture}`;
-		} else {
-			profilePicturePreview.src =
-				user.profilePicture || "./assets/portrait-placeholder.png";
-		}
-		const profilePictureInput = document.getElementById(
-			"edit-profile-picture"
-		);
-		profilePictureInput.addEventListener("change", (event) => {
-			const file = event.target.files[0];
-			if (file) {
-				profilePicturePreview.src = "";
-				profilePicturePreview.style.display = "none";
-				console.log("Nytt bilde valgt:", file.name);
-			}
-		});
+		populateEditForm(user);
+		handleProfilePicturePreview(user);
 
 		editForm.onsubmit = async (event) => {
 			event.preventDefault();
-			const updatedData = {
-				firstName: document.getElementById("edit-first-name").value,
-				lastName: document.getElementById("edit-last-name").value,
-				city: document.getElementById("edit-city").value,
-				country: document.getElementById("edit-country").value,
-				age: parseInt(document.getElementById("edit-age").value, 10),
-				gender: document.getElementById("edit-gender").value,
-				username: document.getElementById("edit-username").value,
-			};
-
-			const newPassword = document.getElementById("edit-password").value;
-			if (newPassword) {
-				updatedData.password = newPassword;
-			} else {
-				updatedData.password = user.password;
-			}
-
-			const profilePictureFile = document.getElementById(
-				"edit-profile-picture"
-			).files[0];
-			if (profilePictureFile) {
-				updatedData.profilePicture = await resizeImage(
-					profilePictureFile,
-					800,
-					800
-				);
-			} else {
-				updatedData.profilePicture = user.profilePicture;
-			}
-
-			console.log("Oppdaterte data som sendes til CRUD:", updatedData);
-
-			try {
-				await updateProfile(user._id, updatedData);
-				Object.assign(user, updatedData);
-				editContainer.style.display = "none";
-				profileContainer.style.display = "block";
-				showProfile();
-				alert("Profilen ble oppdatert!");
-			} catch (error) {
-				console.error("Klarte ikke å oppdatere profilen", error);
-				alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
-			}
+			await handleFormSubmit(user, editContainer, profileContainer);
 		};
 		document.getElementById("cancel-edit").addEventListener("click", () => {
 			editContainer.style.display = "none";
@@ -217,6 +140,77 @@ async function showProfile() {
 		profileContainer.appendChild(userCard);
 	} catch (error) {
 		console.error("Kunne ikke hente profildata:", error);
+	}
+}
+
+// === REDIGERINGSSKJEMA === //
+
+function populateEditForm(user) {
+	document.getElementById("edit-first-name").value = user.firstName;
+	document.getElementById("edit-last-name").value = user.lastName;
+	document.getElementById("edit-city").value = user.city;
+	document.getElementById("edit-country").value = user.country;
+	document.getElementById("edit-age").value = user.age;
+	document.getElementById("edit-gender").value = user.gender;
+	document.getElementById("edit-username").value = user.username;
+	document.getElementById("edit-password").value = "";
+}
+
+function handleProfilePicturePreview(user) {
+	const profilePicturePreview = document.getElementById(
+		"edit-profile-picture-preview"
+	);
+	const profilePictureInput = document.getElementById("edit-profile-picture");
+	if (user.profilePicture && !user.profilePicture.startsWith("data:image/")) {
+		profilePicturePreview.src = `data:image/jpeg;base64,${user.profilePicture}`;
+	} else {
+		profilePicturePreview.src =
+			user.profilePicture || "./assets/portrait-placeholder.png";
+	}
+	profilePictureInput.addEventListener("change", (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			profilePicturePreview.src = "";
+			profilePicturePreview.style.display = "none";
+			console.log("Nytt bilde valgt:", file.name);
+		}
+	});
+}
+
+async function handleFormSubmit(user, editContainer, profileContainer) {
+	const updatedData = {
+		firstName: document.getElementById("edit-first-name").value,
+		lastName: document.getElementById("edit-last-name").value,
+		city: document.getElementById("edit-city").value,
+		country: document.getElementById("edit-country").value,
+		age: parseInt(document.getElementById("edit-age").value, 10),
+		gender: document.getElementById("edit-gender").value,
+		username: document.getElementById("edit-username").value,
+	};
+	const newPassword = document.getElementById("edit-password").value;
+	updatedData.password = newPassword ? newPassword : user.password;
+	const profilePictureFile = document.getElementById("edit-profile-picture")
+		.files[0];
+	if (profilePictureFile) {
+		updatedData.profilePicture = await resizeImage(
+			profilePictureFile,
+			800,
+			800
+		);
+	} else {
+		updatedData.profilePicture = user.profilePicture;
+	}
+	console.log("Oppdaterte data som sendes til CRUD:", updatedData);
+	try {
+		await updateProfile(user._id, updatedData);
+		Object.assign(user, updatedData);
+		editContainer.style.display = "none";
+		profileContainer.style.display = "block";
+		showProfile();
+		alert("Profilen ble oppdatert!");
+	} catch (error) {
+		console.error("Klarte ikke å oppdatere profilen", error);
+		alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
 	}
 }
 
