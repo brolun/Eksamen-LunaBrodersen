@@ -35,18 +35,20 @@ function createUserCard(user, category = "users") {
 	if (category === "profiles") {
 		const editButton = createEditButton(user, userCard);
 		const logoutButton = createLogoutButton(user);
+		const deleteButton = createDeleteButton(user, userCard, "profiles");
 		userCard.appendChild(editButton);
 		userCard.appendChild(logoutButton);
+		userCard.appendChild(deleteButton);
 	}
 	if (category === "users") {
-		const noButton = createNoButton(user, userCard, "users");
+		const deleteButton = createDeleteButton(user, userCard, "users");
 		const yesButton = createYesButton(user, userCard);
-		userCard.appendChild(noButton);
+		userCard.appendChild(deleteButton);
 		userCard.appendChild(yesButton);
 	}
 	if (category === "favorites") {
-		const noButton = createNoButton(user, userCard, "favorites");
-		userCard.appendChild(noButton);
+		const deleteButton = createDeleteButton(user, userCard, "favorites");
+		userCard.appendChild(deleteButton);
 	}
 	return userCard;
 }
@@ -92,23 +94,34 @@ function createLogoutButton() {
 	return logoutButton;
 }
 
-function createNoButton(user, userCard, category) {
-	const noButton = document.createElement("button");
-	noButton.textContent = "Nei";
-	noButton.classList.add("no-button");
-	noButton.addEventListener("click", async () => {
+function createDeleteButton(user, userCard, category) {
+	const deleteButton = document.createElement("button");
+	deleteButton.textContent = category === "profiles" ? "Slett profil" : "Nei";
+	deleteButton.classList.add("delete-button");
+	deleteButton.addEventListener("click", async () => {
 		try {
-			await deleteUser(user._id, category);
-			userCard.remove();
-			if (category === "users") {
-				localStorage.removeItem("currentMatch");
-				showPotentialMatch();
+			if (category === "profiles") {
+				const confirmDelete = confirm(
+					"Er du sikker på at du vil slette profilen din? Dette kan ikke angres."
+				);
+				if (!confirmDelete) return;
+				await deleteUser(user._id, "profiles");
+				localStorage.removeItem("loggedInUser");
+				alert("Profilen din er slettet.");
+				window.location.href = "index.html";
+			} else {
+				await deleteUser(user._id, category);
+				userCard.remove();
+				if (category === "users") {
+					localStorage.removeItem("currentMatch");
+					showPotentialMatch();
+				}
 			}
 		} catch (error) {
 			console.error(`Klarte ikke å slette bruker fra ${category}`, error);
 		}
 	});
-	return noButton;
+	return deleteButton;
 }
 
 function createYesButton(user, userCard) {
