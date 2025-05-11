@@ -4,7 +4,7 @@ import { addFavorite } from "./requests/POST.js";
 import { getFavorites, getUsers, getProfile } from "./requests/GET.js";
 import { updateProfile } from "./requests/PUT.js";
 import { deleteUser } from "./requests/DELETE.js";
-import { toBase64, resizeImage } from "./requests/utils.js";
+import { resizeImage } from "./requests/utils.js";
 
 // === BRUKERKORT ===
 
@@ -12,6 +12,10 @@ function createUserCard(user, category = "users") {
 	console.log("Oppretter brukerens kort for:", user);
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
+
+	if (category === "favorites" && user.hasMatched !== undefined) {
+		userCard.classList.add(user.hasMatched ? "matched" : "not-matched");
+	}
 
 	let profilePicture;
 	if (category === "profiles") {
@@ -151,6 +155,17 @@ function createFavoriteButton(user, userCard) {
 			localStorage.removeItem("currentMatch");
 			showFavorites();
 			showPotentialMatch();
+			const favorites = await getFavorites();
+			if (favorites && favorites.length > 0) {
+				const newestFavorite = favorites[favorites.length - 1];
+				const favoriteCard = createUserCard(
+					newestFavorite,
+					"favorites"
+				);
+				notifyOfMutualMatch(newestFavorite, favoriteCard);
+			} else {
+				console.error("Ingen favoritter funnet etter opprettelse.");
+			}
 		} catch (error) {
 			console.error(
 				"Klarte ikke å flytte brukeren til favoritter",
@@ -351,6 +366,29 @@ async function showFavorites() {
 		const userCard = createUserCard(user, "favorites");
 		favoriteList.appendChild(userCard);
 	});
+}
+
+// === TILLEGGSFUNKSJON === //
+
+function notifyOfMutualMatch(favorite) {
+	const randomDelay = Math.floor(Math.random() * 10000) + 5000;
+
+	setTimeout(() => {
+		const hasMatched = Math.random() < 0.5;
+		if (hasMatched) {
+			userCard.classList.add("matched");
+			userCard.classList.remove("not-matched");
+			alert(
+				`🎉 ${favorite.name.first} ${favorite.name.last} har også matchet med deg!`
+			);
+		} else {
+			userCard.classList.add("not-matched");
+			userCard.classList.remove("matched");
+			alert(
+				`😢 ${favorite.name.first} ${favorite.name.last} har dessverre ikke matchet med deg.`
+			);
+		}
+	}, randomDelay);
 }
 
 // === INIT ===
