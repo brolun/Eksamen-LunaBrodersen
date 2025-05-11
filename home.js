@@ -372,6 +372,12 @@ async function showFavorites() {
 // === INIT ===
 
 window.addEventListener("DOMContentLoaded", () => {
+	const loggedInUser = localStorage.getItem("loggedInUser");
+	if (!loggedInUser) {
+		alert("Du må være logget inn for å få tilgang til denne siden.");
+		window.location.href = "index.html";
+		return;
+	}
 	showProfile();
 	populateAgeRangeDropdown();
 	handleFilters();
