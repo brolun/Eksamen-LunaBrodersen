@@ -1,16 +1,16 @@
-import { crudUrl } from "./auth.js";
+import { crudUrl, randomUserUrl } from "./auth.js";
 
 async function getUsers() {
 	try {
-		const response = await fetch(`${crudUrl}/users`);
+		const response = await fetch(randomUserUrl);
 		if (!response.ok) {
 			throw new Error("HTTP error! status:", response.status);
 		}
 		const data = await response.json();
-		console.log(data);
-		return data;
+		console.log("Brukere hentet fra randomuser.me:", data.results);
+		return data.results;
 	} catch (error) {
-		console.error("Klarte ikke å hente brukere", error);
+		console.error("Feil ved henting av brukere fra randomuser.me:", error);
 		return [];
 	}
 }

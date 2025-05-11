@@ -131,7 +131,6 @@ function createYesButton(user, userCard) {
 	yesButton.addEventListener("click", async () => {
 		try {
 			await addFavorite(user);
-			await deleteUser(user._id, "users");
 			userCard.remove();
 			localStorage.removeItem("currentMatch");
 			showFavorites();
@@ -302,9 +301,8 @@ function handleFilters() {
 // === POTENSIELL MATCH === //
 
 async function showPotentialMatch() {
-	console.log("showPotentialMatch ble kalt");
 	const users = await getUsers();
-	console.log("Alle brukere hentet fra CRUD:", users);
+	console.log("Alle brukere hentet fra randomuser.me:", users);
 
 	const potentialMatch = document.getElementById("match-suggestion");
 	if (!users || users.length === 0) {
