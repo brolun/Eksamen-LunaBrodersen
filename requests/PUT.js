@@ -2,8 +2,6 @@ import { crudUrl } from "./auth.js";
 
 async function updateProfile(profileId, updatedData) {
 	try {
-		console.log("Sender oppdaterte data til serveren:", updatedData);
-
 		const response = await fetch(`${crudUrl}/profiles/${profileId}`, {
 			method: "PUT",
 			headers: {
@@ -11,9 +9,6 @@ async function updateProfile(profileId, updatedData) {
 			},
 			body: JSON.stringify(updatedData),
 		});
-
-		console.log("Serverens respons:", response);
-
 		if (response.ok) {
 			try {
 				const data = await response.json();
@@ -32,4 +27,34 @@ async function updateProfile(profileId, updatedData) {
 	}
 }
 
-export { updateProfile };
+async function updateFavorite(favoriteId, favorite) {
+	try {
+		if (!favorite || !favoriteId) {
+			throw new Error("Ugyldig favorittobjekt.");
+		}
+		const response = await fetch(`${crudUrl}/favorites/${favoriteId}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(favorite),
+		});
+		if (response.ok) {
+			const contentLength = response.headers.get("Content-Length");
+			if (contentLength && parseInt(contentLength) > 0) {
+				const data = await response.json();
+				console.log("Favoritt oppdatert:", data);
+				return data;
+			} else {
+				return null;
+			}
+		} else {
+			throw new Error(`HTTP-feil! Status: ${response.status}`);
+		}
+	} catch (error) {
+		console.error("Feil ved oppdatering av favoritt:", error);
+		throw error;
+	}
+}
+
+export { updateProfile, updateFavorite };

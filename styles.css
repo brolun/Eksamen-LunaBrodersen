@@ -1,0 +1,8 @@
+/* === BRUKERKORT === */
+
+.user-card.matched {
+	background-color: green;
+}
+.user-card.not-matched {
+	background-color: red;
+}
