@@ -34,7 +34,9 @@ function createUserCard(user, category = "users") {
 
 	if (category === "profiles") {
 		const editButton = createEditButton(user, userCard);
+		const logoutButton = createLogoutButton(user);
 		userCard.appendChild(editButton);
+		userCard.appendChild(logoutButton);
 	}
 	if (category === "users") {
 		const noButton = createNoButton(user, userCard, "users");
@@ -77,6 +79,17 @@ function createEditButton(user) {
 		});
 	});
 	return editButton;
+}
+
+function createLogoutButton() {
+	const logoutButton = document.createElement("button");
+	logoutButton.textContent = "Logg ut";
+	logoutButton.classList.add("logout-button");
+	logoutButton.addEventListener("click", () => {
+		localStorage.removeItem("loggedInUser");
+		window.location.href = "index.html";
+	});
+	return logoutButton;
 }
 
 function createNoButton(user, userCard, category) {
