@@ -1,20 +1,22 @@
-// === IMPORT ===
+// === IMPORT === //
 
 import { addFavorite } from "./requests/POST.js";
 import { getFavorites, getUsers, getProfile } from "./requests/GET.js";
-import { updateProfile } from "./requests/PUT.js";
+import { updateProfile, updateFavorite } from "./requests/PUT.js";
 import { deleteUser } from "./requests/DELETE.js";
 import { resizeImage } from "./requests/utils.js";
 
-// === BRUKERKORT ===
+// === BRUKERKORT === //
 
 function createUserCard(user, category = "users") {
 	console.log("Oppretter brukerens kort for:", user);
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
 
-	if (category === "favorites" && user.hasMatched !== undefined) {
-		userCard.classList.add(user.hasMatched ? "matched" : "not-matched");
+	if (category === "favorites" && user.matched !== "") {
+		userCard.classList.add(
+			user.matched === "true" ? "matched" : "not-matched"
+		);
 	}
 
 	let profilePicture;
@@ -155,17 +157,15 @@ function createFavoriteButton(user, userCard) {
 			localStorage.removeItem("currentMatch");
 			showFavorites();
 			showPotentialMatch();
+
 			const favorites = await getFavorites();
 			if (favorites && favorites.length > 0) {
 				const newestFavorite = favorites[favorites.length - 1];
-				const favoriteCard = createUserCard(
-					newestFavorite,
-					"favorites"
-				);
-				document.getElementById("favorites").appendChild(favoriteCard);
-				notifyOfMutualMatch(newestFavorite, favoriteCard);
+				const favoriteList = document.getElementById("favorites");
+				console.log("Kaller notifyOfMutualMatch for:", newestFavorite);
+				notifyOfMutualMatch(newestFavorite, favoriteList);
 			} else {
-				console.error("Ingen favoritter funnet etter opprettelse.");
+				console.warn("Ingen favoritter funnet etter oppdatering.");
 			}
 		} catch (error) {
 			console.error(
@@ -177,7 +177,7 @@ function createFavoriteButton(user, userCard) {
 	return favoriteButton;
 }
 
-// === BRUKERPROFIL ===
+// === BRUKERPROFIL === //
 
 async function showProfile() {
 	try {
@@ -350,49 +350,75 @@ async function showPotentialMatch() {
 	}
 }
 
-// === FAVORITTER ===
+// === FAVORITTER === //
 
 async function showFavorites() {
-	const favorites = await getFavorites();
-	if (!favorites || favorites.length === 0) {
-		console.log("Ingen favoritter funnet.");
+	try {
+		console.log("showFavorites blir kalt");
+		const favorites = await getFavorites();
+		console.log("Favoritter hentet fra CRUD CRUD:", favorites);
+
+		if (!favorites || favorites.length === 0) {
+			console.log("Ingen favoritter funnet.");
+			const favoriteList = document.getElementById("favorites");
+			favoriteList.innerHTML = "<p>Ingen favoritter funnet.</p>";
+			return;
+		}
+
 		const favoriteList = document.getElementById("favorites");
-		favoriteList.innerHTML = "<p>Ingen favoritter funnet.</p>";
-		return;
+		favoriteList.innerHTML = "";
+		favorites.forEach((user) => {
+			console.log("Oppretter kort for bruker:", user);
+			const userCard = createUserCard(user, "favorites");
+			favoriteList.appendChild(userCard);
+		});
+	} catch (error) {
+		console.error("Feil i showFavorites:", error);
 	}
-	console.log("Favoritter:", favorites);
-	const favoriteList = document.getElementById("favorites");
-	favoriteList.innerHTML = "";
-	favorites.forEach((user) => {
-		const userCard = createUserCard(user, "favorites");
-		favoriteList.appendChild(userCard);
-	});
 }
 
 // === TILLEGGSFUNKSJON === //
 
-function notifyOfMutualMatch(favorite, userCard) {
+function notifyOfMutualMatch(favorite, favoriteList) {
 	const randomDelay = Math.floor(Math.random() * 10000) + 5000;
+	setTimeout(async () => {
+		try {
+			const favoriteCard = Array.from(favoriteList.children).find(
+				(card) =>
+					card
+						.querySelector("h3")
+						.textContent.includes(favorite.name.first)
+			);
+			if (!favoriteCard) {
+				console.warn("Fant ikke kort for favoritt:", favorite);
+				return;
+			}
+			const hasMatched = Math.random() < 0.5;
 
-	setTimeout(() => {
-		const hasMatched = Math.random() < 0.5;
-		if (hasMatched) {
-			userCard.classList.add("matched");
-			userCard.classList.remove("not-matched");
 			alert(
-				`🎉 ${favorite.name.first} ${favorite.name.last} har også matchet med deg!`
+				hasMatched
+					? `🎉 ${favorite.name.first} ${favorite.name.last} har også matchet med deg!`
+					: `😢 ${favorite.name.first} ${favorite.name.last} har dessverre ikke matchet med deg.`
 			);
-		} else {
-			userCard.classList.add("not-matched");
-			userCard.classList.remove("matched");
-			alert(
-				`😢 ${favorite.name.first} ${favorite.name.last} har dessverre ikke matchet med deg.`
+			favoriteCard.classList.add(hasMatched ? "matched" : "not-matched");
+			const updatedFavorite = {
+				...favorite,
+				matched: hasMatched ? "true" : "false",
+			};
+			const favoriteId = updatedFavorite._id;
+			delete updatedFavorite._id;
+			await updateFavorite(favoriteId, updatedFavorite);
+			console.log(
+				`Matched-status oppdatert for ${favorite.name.first} ${favorite.name.last}:`,
+				hasMatched ? "true" : "false"
 			);
+		} catch (error) {
+			console.error("Feil ved oppdatering av matched-status:", error);
 		}
 	}, randomDelay);
 }
 
-// === INIT ===
+// === INIT === //
 
 window.addEventListener("DOMContentLoaded", async () => {
 	try {

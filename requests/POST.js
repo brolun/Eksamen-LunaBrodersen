@@ -3,12 +3,16 @@ import { crudUrl } from "./auth.js";
 async function addFavorite(user) {
 	try {
 		const { _id, ...userWithoutId } = user;
+		const favoriteWithMatchStatus = {
+			...userWithoutId,
+			matched: "",
+		};
 		const response = await fetch(`${crudUrl}/favorites`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(userWithoutId),
+			body: JSON.stringify(favoriteWithMatchStatus),
 		});
 		if (!response.ok) {
 			throw new Error("HTTP error! status:", response.status);
@@ -50,11 +54,9 @@ async function loginUser(username, password) {
 			},
 			body: JSON.stringify({ username, password }),
 		});
-
 		if (!response.ok) {
 			throw new Error("Feil brukernavn eller passord!");
 		}
-
 		const loggedInUser = await response.json();
 		console.log("Innlogging vellykket:", loggedInUser);
 		return loggedInUser;
