@@ -284,53 +284,54 @@ function handleFilters() {
 // === POTENSIELL MATCH === //
 
 async function showPotentialMatch() {
-	const users = await getUsers();
-	console.log("Alle brukere hentet fra randomuser.me:", users);
+	try {
+		const potentialMatch = document.getElementById("match-suggestion");
 
-	const potentialMatch = document.getElementById("match-suggestion");
-	if (!users || users.length === 0) {
-		potentialMatch.innerHTML = "<p>Ingen brukere tilgjengelig.</p>";
-		return;
+		const savedMatch = localStorage.getItem("currentMatch");
+		if (savedMatch) {
+			console.log("Viser lagret match fra localStorage.");
+			const randomUser = JSON.parse(savedMatch);
+			potentialMatch.innerHTML = "";
+			const userCard = createUserCard(randomUser);
+			potentialMatch.appendChild(userCard);
+			return;
+		}
+
+		const users = await getUsers();
+		if (!users || users.length === 0) {
+			potentialMatch.innerHTML = `<p>Ingen brukere tilgjengelig.</p>`;
+			return;
+		}
+
+		const selectedGender = localStorage.getItem("selectedGender");
+		const ageRange = localStorage.getItem("ageRange");
+		if (!selectedGender || !ageRange) {
+			potentialMatch.innerHTML = `<p>Velg kjønn og aldersintervall for å se potensielle matcher.</p>`;
+			return;
+		}
+
+		const [minAge, maxAge] = ageRange.split("-").map(Number);
+		const filteredUsers = users.filter(
+			(user) =>
+				user.gender === selectedGender &&
+				user.dob.age >= minAge &&
+				user.dob.age <= maxAge
+		);
+		if (filteredUsers.length === 0) {
+			potentialMatch.innerHTML = `<p>Ingen brukere matcher dine kriterier.</p>`;
+			return;
+		}
+
+		const randomUser =
+			filteredUsers[Math.floor(Math.random() * filteredUsers.length)];
+		console.log("Valgt match:", randomUser);
+		localStorage.setItem("currentMatch", JSON.stringify(randomUser));
+		potentialMatch.innerHTML = "";
+		const userCard = createUserCard(randomUser);
+		potentialMatch.appendChild(userCard);
+	} catch (error) {
+		console.error("Feil i showPotentialMatch:", error);
 	}
-	const selectedGender = localStorage.getItem("selectedGender");
-	if (!selectedGender) {
-		potentialMatch.innerHTML =
-			"<p>Velg et kjønn for å se potensielle matcher.</p>";
-		return;
-	}
-	const ageRange = localStorage.getItem("ageRange");
-	if (!ageRange) {
-		potentialMatch.innerHTML =
-			"<p>Velg et aldersintervall for å se potensielle matcher.</p>";
-		return;
-	}
-
-	const [minAge, maxAge] = ageRange.split("-").map(Number);
-	console.log("Min alder:", minAge);
-	console.log("Max alder:", maxAge);
-
-	const filteredUsers = users.filter(
-		(user) =>
-			user.gender === selectedGender &&
-			user.dob.age >= minAge &&
-			user.dob.age <= maxAge
-	);
-	console.log("Filtrerte brukere:", filteredUsers);
-
-	if (filteredUsers.length === 0) {
-		potentialMatch.innerHTML =
-			"<p>Ingen brukere matcher dine kriterier.</p>";
-		return;
-	}
-
-	const randomUser =
-		filteredUsers[Math.floor(Math.random() * filteredUsers.length)];
-	console.log("Valgt match:", randomUser);
-
-	localStorage.setItem("currentMatch", JSON.stringify(randomUser));
-	potentialMatch.innerHTML = "";
-	const userCard = createUserCard(randomUser);
-	potentialMatch.appendChild(userCard);
 }
 
 // === FAVORITTER ===
