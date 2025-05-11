@@ -41,10 +41,10 @@ function createUserCard(user, category = "users") {
 		userCard.appendChild(deleteButton);
 	}
 	if (category === "users") {
-		const deleteButton = createDeleteButton(user, userCard, "users");
-		const yesButton = createYesButton(user, userCard);
-		userCard.appendChild(deleteButton);
-		userCard.appendChild(yesButton);
+		const nextMatchButton = createNextMatchButton(userCard);
+		const favoriteButton = createFavoriteButton(user, userCard);
+		userCard.appendChild(nextMatchButton);
+		userCard.appendChild(favoriteButton);
 	}
 	if (category === "favorites") {
 		const deleteButton = createDeleteButton(user, userCard, "favorites");
@@ -124,11 +124,27 @@ function createDeleteButton(user, userCard, category) {
 	return deleteButton;
 }
 
-function createYesButton(user, userCard) {
-	const yesButton = document.createElement("button");
-	yesButton.textContent = "Ja";
-	yesButton.classList.add("yes-button");
-	yesButton.addEventListener("click", async () => {
+function createNextMatchButton(userCard) {
+	const nextMatchButton = document.createElement("button");
+	nextMatchButton.textContent = "Nei";
+	nextMatchButton.classList.add("next-match-button");
+	nextMatchButton.addEventListener("click", async () => {
+		try {
+			userCard.remove();
+			localStorage.removeItem("currentMatch");
+			await showPotentialMatch();
+		} catch (error) {
+			console.error("Klarte ikke å vise neste match", error);
+		}
+	});
+	return nextMatchButton;
+}
+
+function createFavoriteButton(user, userCard) {
+	const favoriteButton = document.createElement("button");
+	favoriteButton.textContent = "Ja";
+	favoriteButton.classList.add("yes-button");
+	favoriteButton.addEventListener("click", async () => {
 		try {
 			await addFavorite(user);
 			userCard.remove();
@@ -142,7 +158,7 @@ function createYesButton(user, userCard) {
 			);
 		}
 	});
-	return yesButton;
+	return favoriteButton;
 }
 
 // === BRUKERPROFIL ===
