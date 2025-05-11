@@ -1,21 +1,35 @@
 import { crudUrl } from "./auth.js";
 
-async function updateUserStatus(userId, status) {
+async function updateProfile(profileId, updatedData) {
 	try {
-		const response = await fetch(`${crudUrl}/users/${userId}`, {
+		console.log("Sender oppdaterte data til serveren:", updatedData);
+
+		const response = await fetch(`${crudUrl}/profiles/${profileId}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ status: status }),
+			body: JSON.stringify(updatedData),
 		});
-		if (!response.ok) {
-			throw new Error("HTTP error! status:", response.status);
+
+		console.log("Serverens respons:", response);
+
+		if (response.ok) {
+			try {
+				const data = await response.json();
+				console.log("Profil oppdatert:", data);
+				return data;
+			} catch (error) {
+				console.warn("Serveren returnerte ingen data.");
+				return null;
+			}
+		} else {
+			throw new Error(`HTTP-feil! Status: ${response.status}`);
 		}
-		console.log("Brukerstatus oppdatert:", userId, status);
 	} catch (error) {
-		console.error("Klarte ikke å oppdatere brukerstatus", error);
+		console.error("Feil ved oppdatering av profil:", error);
+		throw error;
 	}
 }
 
-export { updateUserStatus };
+export { updateProfile };

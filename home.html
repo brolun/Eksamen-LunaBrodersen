@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="nb">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<h1>Love is in the air!</h1>
+
+		<h2>Din profil</h2>
+		<div id="profile">
+			<!-- Profilkort legges inn her med JS -->
+		</div>
+		<div id="edit-profile-container" style="display: none">
+			<h3>Rediger profil</h3>
+			<form id="edit-profile-form">
+				<img
+					id="edit-profile-picture-preview"
+					src=""
+					alt="Profilbilde"
+					style="max-width: 150px; display: block; margin-top: 10px"
+				/>
+				<label for="edit-profile-picture">Profilbilde:</label>
+				<input type="file" id="edit-profile-picture" accept="image/*" />
+				<br />
+				<label for="edit-first-name">Fornavn:</label>
+				<input type="text" id="edit-first-name" />
+				<label for="edit-last-name">Etternavn:</label>
+				<input type="text" id="edit-last-name" />
+				<br />
+				<label for="edit-city">By:</label>
+				<input type="text" id="edit-city" />
+				<label for="edit-country">Land:</label>
+				<input type="text" id="edit-country" />
+				<br />
+				<label for="edit-age">Alder:</label>
+				<input type="number" id="edit-age" />
+				<label for="edit-gender">Kjønn:</label>
+				<select id="edit-gender">
+					<option value="male">Mann</option>
+					<option value="female">Dame</option>
+				</select>
+				<br />
+				<label for="edit-username">Brukernavn:</label>
+				<input type="text" id="edit-username" />
+				<label for="edit-password">Passord:</label>
+				<input type="password" id="edit-password" />
+				<br />
+				<button type="submit">Lagre</button>
+				<button type="button" id="cancel-edit">Avbryt</button>
+			</form>
+		</div>
+
+		<h2>Ditt neste match?</h2>
+
+		<p>Filtrer etter:</p>
+		<div id="match-filters">
+			<div id="gender-sort">
+				<label for="gender-select">Kjønn:</label>
+				<select id="gender-select">
+					<option value="" disabled selected>Velg kjønn</option>
+					<option value="female">Dame</option>
+					<option value="male">Mann</option>
+				</select>
+			</div>
+
+			<div id="age-sort">
+				<label for="age-range">Alder:</label>
+				<select id="age-range">
+					<!-- Alternativer genereres med JS -->
+				</select>
+			</div>
+		</div>
+
+		<div id="match-suggestion">
+			<!-- Forslag til match legges inn her med JS -->
+		</div>
+
+		<h2>Dine favoritter</h2>
+		<div id="favorites">
+			<!-- Oversikt over favoritter legges inn her med JS -->
+		</div>
+
+		<script type="module" src="home.js"></script>
+		<!-- Dette scriptet skal kun brukes første gang siden kjøres for å populere databasen. Deretter, kommenter det ut -->
+		<!-- <script type="module" src="/requests/populateDB.js"></script> -->
+	</body>
+</html>

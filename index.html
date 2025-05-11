@@ -6,42 +6,74 @@
 		<title>Document</title>
 	</head>
 	<body>
-		<h1>Love is in the air!</h1>
+		<h1>Velkommen</h1>
 
-		<h2>Din profil</h2>
+		<!-- Innloggingsskjema (skjult som standard) -->
+		<div id="login-container" style="display: none">
+			<h2>Logg inn</h2>
+			<form id="login-form">
+				<label for="username">Brukernavn:</label>
+				<input type="text" id="username" name="username" required />
+				<br />
+				<label for="password">Passord:</label>
+				<input type="password" id="password" name="password" required />
+				<br />
+				<button type="submit">Logg inn</button>
+			</form>
+			<p>
+				Har du ikke en bruker?
+				<a href="#" id="go-to-register">Gå til registrering</a>
+			</p>
+		</div>
 
-		<h2>Ditt neste match?</h2>
-
-		<p>Filtrer etter:</p>
-		<div id="match-filters">
-			<div id="gender-sort">
+		<!-- Registreringsskjema (vises som standard) -->
+		<div id="register-container">
+			<h2>Registrer deg</h2>
+			<form id="new-user-form">
+				<label for="profile-picture">Profilbilde:</label>
+				<input type="file" id="profile-picture" accept="image/*" />
+				<label for="first-name">Fornavn:</label>
+				<input type="text" id="first-name" name="first-name" required />
+				<label for="last-name">Etternavn:</label>
+				<input type="text" id="last-name" name="last-name" required />
+				<br />
+				<label for="city">By:</label>
+				<input type="text" id="city" name="city" required />
+				<label for="country">Land:</label>
+				<input type="text" id="country" name="country" required />
+				<br />
+				<label for="age">Alder:</label>
+				<input type="number" id="age" name="age" required />
 				<label for="gender-select">Kjønn:</label>
 				<select id="gender-select">
 					<option value="" disabled selected>Velg kjønn</option>
 					<option value="female">Dame</option>
 					<option value="male">Mann</option>
 				</select>
-			</div>
-
-			<div id="age-sort">
-				<label for="age-range">Alder:</label>
-				<select id="age-range">
-					<!-- Alternativer genereres med JavaScript -->
-				</select>
-			</div>
-		</div>
-
-		<div id="match-suggestion">
-			<!-- Forslag til match legges inn her med JS -->
-		</div>
-
-		<h2>Dine favoritter</h2>
-		<div id="favorites">
-			<!-- Oversikt over favoritter legges inn her med JS -->
+				<br />
+				<label for="new-username">Brukernavn:</label>
+				<input
+					type="text"
+					id="new-username"
+					name="new-username"
+					required
+				/>
+				<br />
+				<label for="new-password">Passord:</label>
+				<input
+					type="password"
+					id="new-password"
+					name="new-password"
+					required
+				/>
+				<br />
+				<button type="submit">Opprett bruker</button>
+			</form>
+			<p>
+				Har du en bruker? <a href="#" id="go-to-login">Gå til login</a>
+			</p>
 		</div>
 
 		<script type="module" src="index.js"></script>
-		<!-- Dette scriptet skal kun brukes første gang siden kjøres for å populere databasen. Deretter, kommenter det ut -->
-		<!-- <script type="module" src="/requests/populateDB.js"></script> -->
 	</body>
 </html>
