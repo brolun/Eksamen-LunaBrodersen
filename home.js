@@ -71,7 +71,36 @@ function createEditButton(user) {
 		document.getElementById("edit-age").value = user.age;
 		document.getElementById("edit-gender").value = user.gender;
 		document.getElementById("edit-username").value = user.username;
-		document.getElementById("edit-password").value = user.password;
+		document.getElementById("edit-password").value = "";
+
+		const profilePicturePreview = document.getElementById(
+			"edit-profile-picture-preview"
+		);
+		console.log(
+			"Profilbilde som brukes i redigeringsskjemaet:",
+			user.profilePicture
+		);
+
+		if (
+			user.profilePicture &&
+			!user.profilePicture.startsWith("data:image/")
+		) {
+			profilePicturePreview.src = `data:image/jpeg;base64,${user.profilePicture}`;
+		} else {
+			profilePicturePreview.src =
+				user.profilePicture || "./assets/portrait-placeholder.png";
+		}
+		const profilePictureInput = document.getElementById(
+			"edit-profile-picture"
+		);
+		profilePictureInput.addEventListener("change", (event) => {
+			const file = event.target.files[0];
+			if (file) {
+				profilePicturePreview.src = "";
+				profilePicturePreview.style.display = "none";
+				console.log("Nytt bilde valgt:", file.name);
+			}
+		});
 
 		editForm.onsubmit = async (event) => {
 			event.preventDefault();
@@ -83,8 +112,14 @@ function createEditButton(user) {
 				age: parseInt(document.getElementById("edit-age").value, 10),
 				gender: document.getElementById("edit-gender").value,
 				username: document.getElementById("edit-username").value,
-				password: document.getElementById("edit-password").value,
 			};
+
+			const newPassword = document.getElementById("edit-password").value;
+			if (newPassword) {
+				updatedData.password = newPassword;
+			} else {
+				updatedData.password = user.password;
+			}
 
 			const profilePictureFile = document.getElementById(
 				"edit-profile-picture"

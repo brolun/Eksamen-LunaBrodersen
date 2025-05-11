@@ -27,6 +27,8 @@ document
 		const username = document.getElementById("new-username").value;
 		const password = document.getElementById("new-password").value;
 
+		let profilePicture;
+
 		const profilePictureFile =
 			document.getElementById("profile-picture").files[0];
 		if (profilePictureFile) {
@@ -44,6 +46,7 @@ document
 			gender,
 			username,
 			password,
+			profilePicture,
 		};
 
 		try {
