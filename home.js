@@ -9,7 +9,7 @@ import { resizeImage } from "./requests/utils.js";
 // === BRUKERKORT === //
 
 function createUserCard(user, category = "users") {
-	console.log("Oppretter brukerens kort for:", user);
+	console.log("Oppretter brukerens kort for:", user.name, category);
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
 
@@ -182,21 +182,18 @@ function createFavoriteButton(user, userCard) {
 async function showProfile() {
 	try {
 		const loggedInProfile = await getProfile();
-		console.log("Innlogget profil:", loggedInProfile);
 		if (!loggedInProfile) {
-			console.error("Ingen profildata funnet.");
 			return;
 		}
 		const profileContainer = document.getElementById("profile");
 		if (!profileContainer) {
-			console.error("Elementet med id 'profile' finnes ikke.");
 			return;
 		}
 		const userCard = createUserCard(loggedInProfile, "profiles");
 		profileContainer.innerHTML = "";
 		profileContainer.appendChild(userCard);
 	} catch (error) {
-		console.error("Kunne ikke hente profildata:", error);
+		console.error("Feil med funksjonen showProfile:", error);
 	}
 }
 
@@ -229,7 +226,6 @@ function handleProfilePicturePreview(user) {
 		if (file) {
 			profilePicturePreview.src = "";
 			profilePicturePreview.style.display = "none";
-			console.log("Nytt bilde valgt:", file.name);
 		}
 	});
 }
@@ -257,7 +253,6 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 	} else {
 		updatedData.profilePicture = user.profilePicture;
 	}
-	console.log("Oppdaterte data som sendes til CRUD:", updatedData);
 	try {
 		await updateProfile(user._id, updatedData);
 		Object.assign(user, updatedData);
@@ -266,7 +261,6 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 		showProfile();
 		alert("Profilen ble oppdatert!");
 	} catch (error) {
-		console.error("Klarte ikke å oppdatere profilen", error);
 		alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
 	}
 }
@@ -321,6 +315,7 @@ async function showPotentialMatch() {
 
 		const selectedGender = localStorage.getItem("selectedGender");
 		const ageRange = localStorage.getItem("ageRange");
+
 		if (!selectedGender || !ageRange) {
 			potentialMatch.innerHTML = `<p>Velg kjønn og aldersintervall for å se potensielle matcher.</p>`;
 			return;
@@ -354,26 +349,20 @@ async function showPotentialMatch() {
 
 async function showFavorites() {
 	try {
-		console.log("showFavorites blir kalt");
 		const favorites = await getFavorites();
-		console.log("Favoritter hentet fra CRUD CRUD:", favorites);
-
 		if (!favorites || favorites.length === 0) {
-			console.log("Ingen favoritter funnet.");
 			const favoriteList = document.getElementById("favorites");
 			favoriteList.innerHTML = "<p>Ingen favoritter funnet.</p>";
 			return;
 		}
-
 		const favoriteList = document.getElementById("favorites");
 		favoriteList.innerHTML = "";
 		favorites.forEach((user) => {
-			console.log("Oppretter kort for bruker:", user);
 			const userCard = createUserCard(user, "favorites");
 			favoriteList.appendChild(userCard);
 		});
 	} catch (error) {
-		console.error("Feil i showFavorites:", error);
+		console.error("Feil med funksjonen showFavorites:", error);
 	}
 }
 
@@ -390,7 +379,6 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 						.textContent.includes(favorite.name.first)
 			);
 			if (!favoriteCard) {
-				console.warn("Fant ikke kort for favoritt:", favorite);
 				return;
 			}
 			const hasMatched = Math.random() < 0.5;

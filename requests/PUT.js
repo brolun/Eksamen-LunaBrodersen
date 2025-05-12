@@ -2,6 +2,7 @@ import { crudUrl } from "./auth.js";
 
 async function updateProfile(profileId, updatedData) {
 	try {
+		console.log("Oppdaterer profil i CrudCrud ...");
 		const response = await fetch(`${crudUrl}/profiles/${profileId}`, {
 			method: "PUT",
 			headers: {
@@ -12,14 +13,13 @@ async function updateProfile(profileId, updatedData) {
 		if (response.ok) {
 			try {
 				const data = await response.json();
-				console.log("Profil oppdatert:", data);
+				console.log("Profil oppdatert i CrudCrud:", data);
 				return data;
 			} catch (error) {
-				console.warn("Serveren returnerte ingen data.");
 				return null;
 			}
 		} else {
-			throw new Error(`HTTP-feil! Status: ${response.status}`);
+			throw new Error("HTTP-feil! Status:", response.status);
 		}
 	} catch (error) {
 		console.error("Feil ved oppdatering av profil:", error);
@@ -29,9 +29,7 @@ async function updateProfile(profileId, updatedData) {
 
 async function updateFavorite(favoriteId, favorite) {
 	try {
-		if (!favorite || !favoriteId) {
-			throw new Error("Ugyldig favorittobjekt.");
-		}
+		console.log("Oppdaterer favoritt i CrudCrud ...");
 		const response = await fetch(`${crudUrl}/favorites/${favoriteId}`, {
 			method: "PUT",
 			headers: {
@@ -43,7 +41,7 @@ async function updateFavorite(favoriteId, favorite) {
 			const contentLength = response.headers.get("Content-Length");
 			if (contentLength && parseInt(contentLength) > 0) {
 				const data = await response.json();
-				console.log("Favoritt oppdatert:", data);
+				console.log("Favoritt oppdatert i CrudCrud:", data);
 				return data;
 			} else {
 				return null;
@@ -52,7 +50,7 @@ async function updateFavorite(favoriteId, favorite) {
 			throw new Error(`HTTP-feil! Status: ${response.status}`);
 		}
 	} catch (error) {
-		console.error("Feil ved oppdatering av favoritt:", error);
+		console.error("Feil ved oppdatering av favoritt i CrudCrud:", error);
 		throw error;
 	}
 }
