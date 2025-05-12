@@ -19,6 +19,10 @@ async function addFavorite(user) {
 		}
 		const favoriteUser = await response.json();
 		console.log("Bruker lagt til i favoritter:", favoriteUser);
+		let favorites =
+			JSON.parse(localStorage.getItem("cachedFavorites")) || [];
+		favorites.push(favoriteUser);
+		localStorage.setItem("cachedFavorites", JSON.stringify(favorites));
 	} catch (error) {
 		console.error("Klarte ikke å legge til bruker i favoritter", error);
 	}

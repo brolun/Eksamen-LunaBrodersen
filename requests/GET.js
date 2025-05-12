@@ -32,12 +32,17 @@ async function getFavorites() {
 
 async function getProfile({ username, password } = {}) {
 	try {
+		let profile = JSON.parse(sessionStorage.getItem("loggedInProfile"));
+		if (profile) {
+			console.log("Henter profil fra sessionStorage:", profile);
+			return profile;
+		}
 		const response = await fetch(`${crudUrl}/profiles`);
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 		const profiles = await response.json();
-		let profile;
+
 		if (username && password) {
 			profile = profiles.find(
 				(profile) =>
