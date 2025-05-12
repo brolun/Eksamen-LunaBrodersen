@@ -260,11 +260,7 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 	console.log("Oppdaterte data som sendes til CRUD:", updatedData);
 	try {
 		await updateProfile(user._id, updatedData);
-		const updatedProfile = { ...user, ...updatedData };
-		sessionStorage.setItem(
-			"loggedInProfile",
-			JSON.stringify(updatedProfile)
-		);
+		Object.assign(user, updatedData);
 		editContainer.style.display = "none";
 		profileContainer.style.display = "block";
 		showProfile();
@@ -317,11 +313,7 @@ async function showPotentialMatch() {
 			return;
 		}
 
-		let users = JSON.parse(localStorage.getItem("cachedUsers"));
-		if (!users) {
-			users = await getUsers();
-			localStorage.setItem("cachedUsers", JSON.stringify(users));
-		}
+		const users = await getUsers();
 		if (!users || users.length === 0) {
 			potentialMatch.innerHTML = `<p>Ingen brukere tilgjengelig.</p>`;
 			return;
@@ -362,11 +354,9 @@ async function showPotentialMatch() {
 
 async function showFavorites() {
 	try {
-		let favorites = JSON.parse(localStorage.getItem("cachedFavorites"));
-		if (!favorites) {
-			favorites = await getFavorites();
-			localStorage.setItem("cachedFavorites", JSON.stringify(favorites));
-		}
+		console.log("showFavorites blir kalt");
+		const favorites = await getFavorites();
+		console.log("Favoritter hentet fra CRUD CRUD:", favorites);
 
 		if (!favorites || favorites.length === 0) {
 			console.log("Ingen favoritter funnet.");
@@ -418,16 +408,6 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 			const favoriteId = updatedFavorite._id;
 			delete updatedFavorite._id;
 			await updateFavorite(favoriteId, updatedFavorite);
-			let favorites =
-				JSON.parse(localStorage.getItem("cachedFavorites")) || [];
-			const index = favorites.findIndex((fav) => fav._id === favoriteId);
-			if (index !== -1) {
-				favorites[index] = { ...updatedFavorite, _id: favoriteId };
-				localStorage.setItem(
-					"cachedFavorites",
-					JSON.stringify(favorites)
-				);
-			}
 			console.log(
 				`Matched-status oppdatert for ${favorite.name.first} ${favorite.name.last}:`,
 				hasMatched ? "true" : "false"
@@ -446,8 +426,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 		if (!loggedInProfile) {
 			throw new Error("Ingen bruker er logget inn.");
 		}
-		const favorites = await getFavorites();
-		localStorage.setItem("cachedFavorites", JSON.stringify(favorites));
 		showProfile();
 		handleFilters();
 		showPotentialMatch();
