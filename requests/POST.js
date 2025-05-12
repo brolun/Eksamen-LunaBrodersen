@@ -49,25 +49,4 @@ async function addProfile(user) {
 	}
 }
 
-async function loginUser(username, password) {
-	try {
-		const response = await fetch(`${crudUrl}/login`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ username, password }),
-		});
-		if (!response.ok) {
-			throw new Error("Feil brukernavn eller passord!");
-		}
-		const loggedInUser = await response.json();
-		console.log("Innlogging vellykket:", loggedInUser);
-		return loggedInUser;
-	} catch (error) {
-		console.error("Kunne ikke logge inn:", error);
-		throw error;
-	}
-}
-
-export { addFavorite, addProfile, loginUser };
+export { addFavorite, addProfile };

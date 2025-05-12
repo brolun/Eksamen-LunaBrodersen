@@ -1,8 +1,8 @@
 // === IMPORT === //
 
-import { addProfile, loginUser } from "./requests/POST.js";
+import { addProfile } from "./requests/POST.js";
 import { getProfile } from "./requests/GET.js";
-import { toBase64, resizeImage } from "./requests/utils.js";
+import { resizeImage } from "./requests/utils.js";
 
 // === VARIABLER === //
 
