@@ -1,3 +1,48 @@
+/* === GENERELT === */
+
+* {
+	box-sizing: border-box;
+}
+body {
+	align-items: center;
+	background-color: #f5f5f5;
+	color: #333333;
+	display: flex;
+	flex-direction: column;
+	font-family: Arial, Helvetica, sans-serif;
+	justify-content: center;
+	text-align: center;
+	transition: transform 0.2s ease;
+	width: 100vw;
+}
+header {
+	align-items: center;
+	display: flex;
+	gap: 20px;
+	justify-content: center;
+	margin: 0 auto 30px;
+	text-align: center;
+	width: 100vw;
+}
+:is(h1, h2, h3) {
+	color: #ff6f91;
+}
+header h2 {
+	color: #d95380;
+}
+a {
+	color: #ff6f91;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+footer {
+	margin-top: 50px;
+}
+
+/* === KNAPPER === */
+
 /* === SKJEMAER === */
 
 #register-container,
@@ -161,6 +206,58 @@ button:hover {
 .yes-button:hover {
 	background-color: #d95380;
 }
-.user-card.not-matched {
-	background-color: red;
+.message-button {
+	background-color: #4dc3c9;
+}
+.message-button:hover {
+	background-color: #3ba6ab;
+}
+
+.status-indicator {
+	position: absolute;
+	font-size: 3rem;
+	z-index: 2;
+	pointer-events: none;
+	top: 0;
+	line-height: 1;
+	top: 15px;
+}
+.not-matched-symbol {
+	left: 15px;
+	color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(255, 255, 255, 0.4);
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.matched-symbol {
+	right: 15px;
+	color: #ff6f91;
+	animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.2);
+		opacity: 0.8;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+#favorites {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: auto;
+	overflow: visible;
+	justify-content: center;
 }
