@@ -1,8 +1,8 @@
 // === IMPORT === //
 
-import { addProfile, loginUser } from "./requests/POST.js";
+import { addProfile } from "./requests/POST.js";
 import { getProfile } from "./requests/GET.js";
-import { toBase64, resizeImage } from "./requests/utils.js";
+import { resizeImage } from "./requests/utils.js";
 
 // === VARIABLER === //
 
@@ -10,6 +10,8 @@ const loginContainer = document.getElementById("login-container");
 const goToRegisterLink = document.getElementById("go-to-register");
 const registerContainer = document.getElementById("register-container");
 const goToLoginLink = document.getElementById("go-to-login");
+const fileInput = document.getElementById("profile-picture");
+const fileName = document.getElementById("file-name");
 
 // === REGISTRERING === //
 
@@ -53,7 +55,7 @@ document
 			await addProfile(profileData);
 			alert("Bruker opprettet!");
 			registerContainer.style.display = "none";
-			loginContainer.style.display = "block";
+			loginContainer.style.display = "flex";
 		} catch (error) {
 			alert("Kunne ikke opprette bruker. Prøv igjen senere.");
 		}
@@ -62,7 +64,22 @@ document
 goToLoginLink.addEventListener("click", (event) => {
 	event.preventDefault();
 	registerContainer.style.display = "none";
-	loginContainer.style.display = "block";
+	loginContainer.style.display = "flex";
+});
+
+fileInput.addEventListener("change", (event) => {
+	const file = event.target.files[0];
+	if (file) {
+		fileName.textContent = file.name;
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			document.getElementById("profile-preview").src = e.target.result;
+		};
+		reader.readAsDataURL(file);
+	} else {
+		document.getElementById("profile-preview").src =
+			"./assets/portrait-placeholder.png";
+	}
 });
 
 // === INNLOGGING === //
@@ -95,5 +112,5 @@ document
 goToRegisterLink.addEventListener("click", (event) => {
 	event.preventDefault();
 	loginContainer.style.display = "none";
-	registerContainer.style.display = "block";
+	registerContainer.style.display = "flex";
 });

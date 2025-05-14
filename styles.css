@@ -1,8 +1,263 @@
+/* === GENERELT === */
+
+* {
+	box-sizing: border-box;
+}
+body {
+	align-items: center;
+	background-color: #f5f5f5;
+	color: #333333;
+	display: flex;
+	flex-direction: column;
+	font-family: Arial, Helvetica, sans-serif;
+	justify-content: center;
+	text-align: center;
+	transition: transform 0.2s ease;
+	width: 100vw;
+}
+header {
+	align-items: center;
+	display: flex;
+	gap: 20px;
+	justify-content: center;
+	margin: 0 auto 30px;
+	text-align: center;
+	width: 100vw;
+}
+:is(h1, h2, h3) {
+	color: #ff6f91;
+}
+header h2 {
+	color: #d95380;
+}
+a {
+	color: #ff6f91;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+footer {
+	margin-top: 50px;
+}
+
+/* === KNAPPER === */
+
+/* === SKJEMAER === */
+
+#register-container,
+#login-container {
+	display: flex;
+	align-items: center;
+	border-radius: 10px;
+	flex-direction: column;
+	padding: 10px 30px;
+	background-color: white;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+}
+.form-row {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+.form-group {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	text-align: left;
+}
+#profile-preview {
+	margin: 0 auto;
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+}
+#profile-preview:hover {
+	transform: scale(1.1);
+	cursor: pointer;
+}
+
+.custom-file-input {
+	opacity: 0;
+	position: absolute;
+	z-index: -1;
+}
+input,
+select {
+	background-color: white;
+	border-radius: 4px;
+	border: 1px solid #ff6f61;
+	padding: 8px;
+	color: #333333;
+	font-size: 1rem;
+}
+input:focus {
+	outline: none;
+	border-color: #d95380;
+}
+
+.custom-file-input {
+	opacity: 0;
+	position: absolute;
+	z-index: -1;
+}
+.custom-file-label {
+	display: inline-block;
+	color: white;
+	border-radius: 4px;
+	cursor: pointer;
+	text-align: center;
+	font-size: 1rem;
+}
+button {
+	/* background-color: #ff6f61; */
+	border-radius: 4px;
+	border: none;
+	cursor: pointer;
+	font-size: 1rem;
+	margin-top: 10px;
+	padding: 10px;
+	color: white;
+}
+button:hover {
+	background-color: #d95380;
+}
+
 /* === BRUKERKORT === */
 
-.user-card.matched {
-	background-color: green;
+.user-card {
+	position: relative;
+	max-width: 270px;
+	display: flex;
+	flex-direction: column;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin: 10px;
+	padding: 10px;
+	gap: 15px;
+	border: 1px solid #e0e0e0;
 }
-.user-card.not-matched {
-	background-color: red;
+.user-card h3 {
+	margin-bottom: 0;
+	color: #333333;
+}
+
+.user-card img {
+	height: 300px;
+	width: 250px;
+	object-fit: cover;
+}
+
+.user-card .user-info {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	flex: 1;
+}
+.user-info p {
+	margin: 2px;
+	color: #555555;
+}
+
+.usercard-buttons {
+	position: absolute;
+	top: 285px;
+	display: flex;
+	gap: 30px;
+	left: 50%;
+	transform: translate(-50%);
+	justify-content: center;
+	align-items: center;
+}
+
+.usercard-buttons button {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: none;
+	color: white;
+	cursor: pointer;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: x-large;
+	margin: 0;
+	border: 2px solid white;
+	line-height: 1;
+}
+.next-match-button,
+.delete-favorite-button {
+	background-color: #333333;
+}
+.next-match-button:hover,
+.delete-favorite-button:hover {
+	background-color: #000000;
+}
+.yes-button {
+	background-color: #ff6f61;
+}
+.yes-button:hover {
+	background-color: #d95380;
+}
+.message-button {
+	background-color: #4dc3c9;
+}
+.message-button:hover {
+	background-color: #3ba6ab;
+}
+
+.status-indicator {
+	position: absolute;
+	font-size: 3rem;
+	z-index: 2;
+	pointer-events: none;
+	top: 0;
+	line-height: 1;
+	top: 15px;
+}
+.not-matched-symbol {
+	left: 15px;
+	color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(255, 255, 255, 0.4);
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.matched-symbol {
+	right: 15px;
+	color: #ff6f91;
+	animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.2);
+		opacity: 0.8;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+#favorites {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: auto;
+	overflow: visible;
+	justify-content: center;
 }

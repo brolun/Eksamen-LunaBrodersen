@@ -9,7 +9,7 @@ import { resizeImage } from "./requests/utils.js";
 // === BRUKERKORT === //
 
 function createUserCard(user, category = "users") {
-	console.log("Oppretter brukerens kort for:", user);
+	console.log("Oppretter brukerens kort for:", user.name, category);
 	const userCard = document.createElement("div");
 	userCard.classList.add("user-card");
 
@@ -29,32 +29,52 @@ function createUserCard(user, category = "users") {
 	}
 
 	userCard.innerHTML = `
-  		<img src="${profilePicture}" alt="Profilbilde">
+<div class="status-indicator ${
+		user.matched === "true"
+			? "matched-symbol"
+			: user.matched === "false"
+			? "not-matched-symbol"
+			: ""
+	}">
+        ${user.matched === "true" ? "❤" : user.matched === "false" ? "✖" : ""}
+    </div>
+    <img src="${profilePicture}" alt="Profilbilde">
+    <div class="user-info">
         <h3>${user.firstName || user.name.first} ${
 		user.lastName || user.name.last
-	}</h3>
-        <p>${user.age || user.dob.age} år</p>
+	}, ${user.age || user.dob.age}</h3>
         <p>${user.city || user.location.city}, ${
 		user.country || user.location.country
-	}</p>`;
+	}</p>
+        <div class="usercard-buttons">
+            <!-- Knappene legges til dynamisk her -->
+        </div>
+    </div>
+`;
+
+	const buttonContainer = userCard.querySelector(".usercard-buttons");
 
 	if (category === "profiles") {
 		const editButton = createEditButton(user, userCard);
 		const logoutButton = createLogoutButton(user);
 		const deleteButton = createDeleteButton(user, userCard, "profiles");
-		userCard.appendChild(editButton);
-		userCard.appendChild(logoutButton);
-		userCard.appendChild(deleteButton);
+		buttonContainer.appendChild(editButton);
+		buttonContainer.appendChild(logoutButton);
+		buttonContainer.appendChild(deleteButton);
 	}
 	if (category === "users") {
 		const nextMatchButton = createNextMatchButton(userCard);
 		const favoriteButton = createFavoriteButton(user, userCard);
-		userCard.appendChild(nextMatchButton);
-		userCard.appendChild(favoriteButton);
+		buttonContainer.appendChild(nextMatchButton);
+		buttonContainer.appendChild(favoriteButton);
 	}
 	if (category === "favorites") {
 		const deleteButton = createDeleteButton(user, userCard, "favorites");
-		userCard.appendChild(deleteButton);
+		buttonContainer.appendChild(deleteButton);
+		if (user.matched === "true") {
+			const messageButton = createMessageButton(user);
+			buttonContainer.appendChild(messageButton);
+		}
 	}
 	return userCard;
 }
@@ -102,8 +122,13 @@ function createLogoutButton() {
 
 function createDeleteButton(user, userCard, category) {
 	const deleteButton = document.createElement("button");
-	deleteButton.textContent = category === "profiles" ? "Slett profil" : "Nei";
+	deleteButton.textContent = category === "profiles" ? "Slett profil" : "✖";
 	deleteButton.classList.add("delete-button");
+	if (category === "profiles") {
+		deleteButton.classList.add("delete-profile-button");
+	} else if (category === "favorites") {
+		deleteButton.classList.add("delete-favorite-button");
+	}
 	deleteButton.addEventListener("click", async () => {
 		try {
 			if (category === "profiles") {
@@ -132,7 +157,7 @@ function createDeleteButton(user, userCard, category) {
 
 function createNextMatchButton(userCard) {
 	const nextMatchButton = document.createElement("button");
-	nextMatchButton.textContent = "Nei";
+	nextMatchButton.textContent = "✖";
 	nextMatchButton.classList.add("next-match-button");
 	nextMatchButton.addEventListener("click", async () => {
 		try {
@@ -148,7 +173,7 @@ function createNextMatchButton(userCard) {
 
 function createFavoriteButton(user, userCard) {
 	const favoriteButton = document.createElement("button");
-	favoriteButton.textContent = "Ja";
+	favoriteButton.textContent = "❤";
 	favoriteButton.classList.add("yes-button");
 	favoriteButton.addEventListener("click", async () => {
 		try {
@@ -182,21 +207,18 @@ function createFavoriteButton(user, userCard) {
 async function showProfile() {
 	try {
 		const loggedInProfile = await getProfile();
-		console.log("Innlogget profil:", loggedInProfile);
 		if (!loggedInProfile) {
-			console.error("Ingen profildata funnet.");
 			return;
 		}
 		const profileContainer = document.getElementById("profile");
 		if (!profileContainer) {
-			console.error("Elementet med id 'profile' finnes ikke.");
 			return;
 		}
 		const userCard = createUserCard(loggedInProfile, "profiles");
 		profileContainer.innerHTML = "";
 		profileContainer.appendChild(userCard);
 	} catch (error) {
-		console.error("Kunne ikke hente profildata:", error);
+		console.error("Feil med funksjonen showProfile:", error);
 	}
 }
 
@@ -229,7 +251,6 @@ function handleProfilePicturePreview(user) {
 		if (file) {
 			profilePicturePreview.src = "";
 			profilePicturePreview.style.display = "none";
-			console.log("Nytt bilde valgt:", file.name);
 		}
 	});
 }
@@ -257,7 +278,6 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 	} else {
 		updatedData.profilePicture = user.profilePicture;
 	}
-	console.log("Oppdaterte data som sendes til CRUD:", updatedData);
 	try {
 		await updateProfile(user._id, updatedData);
 		Object.assign(user, updatedData);
@@ -266,7 +286,6 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 		showProfile();
 		alert("Profilen ble oppdatert!");
 	} catch (error) {
-		console.error("Klarte ikke å oppdatere profilen", error);
 		alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
 	}
 }
@@ -276,23 +295,21 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 function handleFilters() {
 	const genderSelect = document.getElementById("gender-select");
 	const selectedGender = localStorage.getItem("selectedGender") || "";
-	if (selectedGender) {
-		genderSelect.value = selectedGender;
-	}
+	genderSelect.value = selectedGender;
 	genderSelect.addEventListener("change", (event) => {
 		console.log("Kjønn valgt:", event.target.value);
 		localStorage.setItem("selectedGender", event.target.value);
+		localStorage.removeItem("currentMatch");
 		showPotentialMatch();
 	});
 
 	const ageRangeSelect = document.getElementById("age-range");
 	const savedAgeRange = localStorage.getItem("ageRange") || "";
-	if (savedAgeRange) {
-		ageRangeSelect.value = savedAgeRange;
-	}
+	ageRangeSelect.value = savedAgeRange;
 	ageRangeSelect.addEventListener("change", (event) => {
 		console.log("Aldersintervall valgt:", event.target.value);
 		localStorage.setItem("ageRange", event.target.value);
+		localStorage.removeItem("currentMatch");
 		showPotentialMatch();
 	});
 }
@@ -302,6 +319,12 @@ function handleFilters() {
 async function showPotentialMatch() {
 	try {
 		const potentialMatch = document.getElementById("match-suggestion");
+		const justLoggedIn = localStorage.getItem("justLoggedIn");
+		if (justLoggedIn === "true") {
+			console.log("Brukeren logget nettopp inn. Genererer ny match.");
+			localStorage.removeItem("currentMatch");
+			localStorage.removeItem("justLoggedIn");
+		}
 
 		const savedMatch = localStorage.getItem("currentMatch");
 		if (savedMatch) {
@@ -321,18 +344,24 @@ async function showPotentialMatch() {
 
 		const selectedGender = localStorage.getItem("selectedGender");
 		const ageRange = localStorage.getItem("ageRange");
-		if (!selectedGender || !ageRange) {
+
+		if (selectedGender === null || ageRange === null) {
 			potentialMatch.innerHTML = `<p>Velg kjønn og aldersintervall for å se potensielle matcher.</p>`;
 			return;
 		}
 
-		const [minAge, maxAge] = ageRange.split("-").map(Number);
-		const filteredUsers = users.filter(
-			(user) =>
-				user.gender === selectedGender &&
-				user.dob.age >= minAge &&
-				user.dob.age <= maxAge
-		);
+		let filteredUsers = users;
+		if (selectedGender !== "whatever") {
+			filteredUsers = filteredUsers.filter(
+				(user) => user.gender === selectedGender
+			);
+		}
+		if (ageRange !== "whatever") {
+			const [minAge, maxAge] = ageRange.split("-").map(Number);
+			filteredUsers = filteredUsers.filter(
+				(user) => user.dob.age >= minAge && user.dob.age <= maxAge
+			);
+		}
 		if (filteredUsers.length === 0) {
 			potentialMatch.innerHTML = `<p>Ingen brukere matcher dine kriterier.</p>`;
 			return;
@@ -354,30 +383,24 @@ async function showPotentialMatch() {
 
 async function showFavorites() {
 	try {
-		console.log("showFavorites blir kalt");
 		const favorites = await getFavorites();
-		console.log("Favoritter hentet fra CRUD CRUD:", favorites);
-
 		if (!favorites || favorites.length === 0) {
-			console.log("Ingen favoritter funnet.");
 			const favoriteList = document.getElementById("favorites");
 			favoriteList.innerHTML = "<p>Ingen favoritter funnet.</p>";
 			return;
 		}
-
 		const favoriteList = document.getElementById("favorites");
 		favoriteList.innerHTML = "";
-		favorites.forEach((user) => {
-			console.log("Oppretter kort for bruker:", user);
+		favorites.reverse().forEach((user) => {
 			const userCard = createUserCard(user, "favorites");
 			favoriteList.appendChild(userCard);
 		});
 	} catch (error) {
-		console.error("Feil i showFavorites:", error);
+		console.error("Feil med funksjonen showFavorites:", error);
 	}
 }
 
-// === TILLEGGSFUNKSJON === //
+// === TILLEGGSFUNKSJONER === //
 
 function notifyOfMutualMatch(favorite, favoriteList) {
 	const randomDelay = Math.floor(Math.random() * 10000) + 5000;
@@ -390,7 +413,6 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 						.textContent.includes(favorite.name.first)
 			);
 			if (!favoriteCard) {
-				console.warn("Fant ikke kort for favoritt:", favorite);
 				return;
 			}
 			const hasMatched = Math.random() < 0.5;
@@ -400,6 +422,17 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 					? `🎉 ${favorite.name.first} ${favorite.name.last} har også matchet med deg!`
 					: `😢 ${favorite.name.first} ${favorite.name.last} har dessverre ikke matchet med deg.`
 			);
+			const statusIndicator =
+				favoriteCard.querySelector(".status-indicator");
+			if (hasMatched) {
+				statusIndicator.textContent = "❤";
+				statusIndicator.classList.remove("not-matched-symbol");
+				statusIndicator.classList.add("matched-symbol");
+			} else {
+				statusIndicator.textContent = "✖";
+				statusIndicator.classList.remove("matched-symbol");
+				statusIndicator.classList.add("not-matched-symbol");
+			}
 			favoriteCard.classList.add(hasMatched ? "matched" : "not-matched");
 			const updatedFavorite = {
 				...favorite,
@@ -408,6 +441,12 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 			const favoriteId = updatedFavorite._id;
 			delete updatedFavorite._id;
 			await updateFavorite(favoriteId, updatedFavorite);
+			if (hasMatched) {
+				const buttonContainer =
+					favoriteCard.querySelector(".usercard-buttons");
+				const messageButton = createMessageButton(favorite);
+				buttonContainer.appendChild(messageButton);
+			}
 			console.log(
 				`Matched-status oppdatert for ${favorite.name.first} ${favorite.name.last}:`,
 				hasMatched ? "true" : "false"
@@ -416,6 +455,33 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 			console.error("Feil ved oppdatering av matched-status:", error);
 		}
 	}, randomDelay);
+}
+// 🗩/🗨/✉ chat button for mutual match
+
+function createMessageButton(user) {
+	const messageButton = document.createElement("button");
+	messageButton.textContent = "🗨";
+	messageButton.classList.add("message-button");
+	messageButton.addEventListener("click", () => {
+		const message = prompt(
+			`Skriv en melding til ${user.firstName || user.name.first}:`
+		);
+		if (message) {
+			alert(
+				`Meldingen din til ${
+					user.firstName || user.name.first
+				} har blitt sendt!`
+			);
+			console.log(
+				`Melding sendt til ${
+					user.firstName || user.name.first
+				}: ${message}`
+			);
+		} else {
+			alert("Meldingen ble ikke sendt.");
+		}
+	});
+	return messageButton;
 }
 
 // === INIT === //
