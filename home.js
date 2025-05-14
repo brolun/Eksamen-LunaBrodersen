@@ -29,32 +29,52 @@ function createUserCard(user, category = "users") {
 	}
 
 	userCard.innerHTML = `
-  		<img src="${profilePicture}" alt="Profilbilde">
+<div class="status-indicator ${
+		user.matched === "true"
+			? "matched-symbol"
+			: user.matched === "false"
+			? "not-matched-symbol"
+			: ""
+	}">
+        ${user.matched === "true" ? "❤" : user.matched === "false" ? "✖" : ""}
+    </div>
+    <img src="${profilePicture}" alt="Profilbilde">
+    <div class="user-info">
         <h3>${user.firstName || user.name.first} ${
 		user.lastName || user.name.last
-	}</h3>
-        <p>${user.age || user.dob.age} år</p>
+	}, ${user.age || user.dob.age}</h3>
         <p>${user.city || user.location.city}, ${
 		user.country || user.location.country
-	}</p>`;
+	}</p>
+        <div class="usercard-buttons">
+            <!-- Knappene legges til dynamisk her -->
+        </div>
+    </div>
+`;
+
+	const buttonContainer = userCard.querySelector(".usercard-buttons");
 
 	if (category === "profiles") {
 		const editButton = createEditButton(user, userCard);
 		const logoutButton = createLogoutButton(user);
 		const deleteButton = createDeleteButton(user, userCard, "profiles");
-		userCard.appendChild(editButton);
-		userCard.appendChild(logoutButton);
-		userCard.appendChild(deleteButton);
+		buttonContainer.appendChild(editButton);
+		buttonContainer.appendChild(logoutButton);
+		buttonContainer.appendChild(deleteButton);
 	}
 	if (category === "users") {
 		const nextMatchButton = createNextMatchButton(userCard);
 		const favoriteButton = createFavoriteButton(user, userCard);
-		userCard.appendChild(nextMatchButton);
-		userCard.appendChild(favoriteButton);
+		buttonContainer.appendChild(nextMatchButton);
+		buttonContainer.appendChild(favoriteButton);
 	}
 	if (category === "favorites") {
 		const deleteButton = createDeleteButton(user, userCard, "favorites");
-		userCard.appendChild(deleteButton);
+		buttonContainer.appendChild(deleteButton);
+		if (user.matched === "true") {
+			const messageButton = createMessageButton(user);
+			buttonContainer.appendChild(messageButton);
+		}
 	}
 	return userCard;
 }
@@ -102,8 +122,13 @@ function createLogoutButton() {
 
 function createDeleteButton(user, userCard, category) {
 	const deleteButton = document.createElement("button");
-	deleteButton.textContent = category === "profiles" ? "Slett profil" : "Nei";
+	deleteButton.textContent = category === "profiles" ? "Slett profil" : "✖";
 	deleteButton.classList.add("delete-button");
+	if (category === "profiles") {
+		deleteButton.classList.add("delete-profile-button");
+	} else if (category === "favorites") {
+		deleteButton.classList.add("delete-favorite-button");
+	}
 	deleteButton.addEventListener("click", async () => {
 		try {
 			if (category === "profiles") {
@@ -132,7 +157,7 @@ function createDeleteButton(user, userCard, category) {
 
 function createNextMatchButton(userCard) {
 	const nextMatchButton = document.createElement("button");
-	nextMatchButton.textContent = "Nei";
+	nextMatchButton.textContent = "✖";
 	nextMatchButton.classList.add("next-match-button");
 	nextMatchButton.addEventListener("click", async () => {
 		try {
@@ -148,7 +173,7 @@ function createNextMatchButton(userCard) {
 
 function createFavoriteButton(user, userCard) {
 	const favoriteButton = document.createElement("button");
-	favoriteButton.textContent = "Ja";
+	favoriteButton.textContent = "❤";
 	favoriteButton.classList.add("yes-button");
 	favoriteButton.addEventListener("click", async () => {
 		try {
