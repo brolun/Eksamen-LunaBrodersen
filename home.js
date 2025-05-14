@@ -382,7 +382,7 @@ async function showFavorites() {
 		}
 		const favoriteList = document.getElementById("favorites");
 		favoriteList.innerHTML = "";
-		favorites.forEach((user) => {
+		favorites.reverse().forEach((user) => {
 			const userCard = createUserCard(user, "favorites");
 			favoriteList.appendChild(userCard);
 		});
@@ -413,6 +413,17 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 					? `🎉 ${favorite.name.first} ${favorite.name.last} har også matchet med deg!`
 					: `😢 ${favorite.name.first} ${favorite.name.last} har dessverre ikke matchet med deg.`
 			);
+			const statusIndicator =
+				favoriteCard.querySelector(".status-indicator");
+			if (hasMatched) {
+				statusIndicator.textContent = "❤";
+				statusIndicator.classList.remove("not-matched-symbol");
+				statusIndicator.classList.add("matched-symbol");
+			} else {
+				statusIndicator.textContent = "✖";
+				statusIndicator.classList.remove("matched-symbol");
+				statusIndicator.classList.add("not-matched-symbol");
+			}
 			favoriteCard.classList.add(hasMatched ? "matched" : "not-matched");
 			const updatedFavorite = {
 				...favorite,
@@ -421,6 +432,12 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 			const favoriteId = updatedFavorite._id;
 			delete updatedFavorite._id;
 			await updateFavorite(favoriteId, updatedFavorite);
+			if (hasMatched) {
+				const buttonContainer =
+					favoriteCard.querySelector(".usercard-buttons");
+				const messageButton = createMessageButton(favorite);
+				buttonContainer.appendChild(messageButton);
+			}
 			console.log(
 				`Matched-status oppdatert for ${favorite.name.first} ${favorite.name.last}:`,
 				hasMatched ? "true" : "false"
