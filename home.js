@@ -295,23 +295,21 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 function handleFilters() {
 	const genderSelect = document.getElementById("gender-select");
 	const selectedGender = localStorage.getItem("selectedGender") || "";
-	if (selectedGender) {
-		genderSelect.value = selectedGender;
-	}
+	genderSelect.value = selectedGender;
 	genderSelect.addEventListener("change", (event) => {
 		console.log("Kjønn valgt:", event.target.value);
 		localStorage.setItem("selectedGender", event.target.value);
+		localStorage.removeItem("currentMatch");
 		showPotentialMatch();
 	});
 
 	const ageRangeSelect = document.getElementById("age-range");
 	const savedAgeRange = localStorage.getItem("ageRange") || "";
-	if (savedAgeRange) {
-		ageRangeSelect.value = savedAgeRange;
-	}
+	ageRangeSelect.value = savedAgeRange;
 	ageRangeSelect.addEventListener("change", (event) => {
 		console.log("Aldersintervall valgt:", event.target.value);
 		localStorage.setItem("ageRange", event.target.value);
+		localStorage.removeItem("currentMatch");
 		showPotentialMatch();
 	});
 }
@@ -321,6 +319,12 @@ function handleFilters() {
 async function showPotentialMatch() {
 	try {
 		const potentialMatch = document.getElementById("match-suggestion");
+		const justLoggedIn = localStorage.getItem("justLoggedIn");
+		if (justLoggedIn === "true") {
+			console.log("Brukeren logget nettopp inn. Genererer ny match.");
+			localStorage.removeItem("currentMatch");
+			localStorage.removeItem("justLoggedIn");
+		}
 
 		const savedMatch = localStorage.getItem("currentMatch");
 		if (savedMatch) {
@@ -341,18 +345,23 @@ async function showPotentialMatch() {
 		const selectedGender = localStorage.getItem("selectedGender");
 		const ageRange = localStorage.getItem("ageRange");
 
-		if (!selectedGender || !ageRange) {
+		if (selectedGender === null || ageRange === null) {
 			potentialMatch.innerHTML = `<p>Velg kjønn og aldersintervall for å se potensielle matcher.</p>`;
 			return;
 		}
 
-		const [minAge, maxAge] = ageRange.split("-").map(Number);
-		const filteredUsers = users.filter(
-			(user) =>
-				user.gender === selectedGender &&
-				user.dob.age >= minAge &&
-				user.dob.age <= maxAge
-		);
+		let filteredUsers = users;
+		if (selectedGender !== "whatever") {
+			filteredUsers = filteredUsers.filter(
+				(user) => user.gender === selectedGender
+			);
+		}
+		if (ageRange !== "whatever") {
+			const [minAge, maxAge] = ageRange.split("-").map(Number);
+			filteredUsers = filteredUsers.filter(
+				(user) => user.dob.age >= minAge && user.dob.age <= maxAge
+			);
+		}
 		if (filteredUsers.length === 0) {
 			potentialMatch.innerHTML = `<p>Ingen brukere matcher dine kriterier.</p>`;
 			return;
