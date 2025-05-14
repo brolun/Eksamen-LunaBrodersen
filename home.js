@@ -391,7 +391,7 @@ async function showFavorites() {
 	}
 }
 
-// === TILLEGGSFUNKSJON === //
+// === TILLEGGSFUNKSJONER === //
 
 function notifyOfMutualMatch(favorite, favoriteList) {
 	const randomDelay = Math.floor(Math.random() * 10000) + 5000;
@@ -446,6 +446,33 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 			console.error("Feil ved oppdatering av matched-status:", error);
 		}
 	}, randomDelay);
+}
+// 🗩/🗨/✉ chat button for mutual match
+
+function createMessageButton(user) {
+	const messageButton = document.createElement("button");
+	messageButton.textContent = "🗨";
+	messageButton.classList.add("message-button");
+	messageButton.addEventListener("click", () => {
+		const message = prompt(
+			`Skriv en melding til ${user.firstName || user.name.first}:`
+		);
+		if (message) {
+			alert(
+				`Meldingen din til ${
+					user.firstName || user.name.first
+				} har blitt sendt!`
+			);
+			console.log(
+				`Melding sendt til ${
+					user.firstName || user.name.first
+				}: ${message}`
+			);
+		} else {
+			alert("Meldingen ble ikke sendt.");
+		}
+	});
+	return messageButton;
 }
 
 // === INIT === //
