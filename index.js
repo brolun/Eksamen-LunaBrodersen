@@ -114,7 +114,3 @@ goToRegisterLink.addEventListener("click", (event) => {
 	loginContainer.style.display = "none";
 	registerContainer.style.display = "flex";
 });
-
-// === EKSPORT === //
-
-export {};
