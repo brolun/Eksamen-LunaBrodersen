@@ -21,8 +21,13 @@ function createUserCard(user, category = "users") {
 
 	let profilePicture;
 	if (category === "profiles") {
-		profilePicture =
-			user.profilePicture || "./assets/portrait-placeholder.png";
+		if (user.profilePicture) {
+			profilePicture = user.profilePicture.startsWith("data:image/")
+				? user.profilePicture
+				: `data:image/jpeg;base64,${user.profilePicture}`;
+		} else {
+			profilePicture = "./assets/portrait-placeholder.png";
+		}
 	} else if (category === "users" || category === "favorites") {
 		profilePicture =
 			user.picture?.large || "./assets/portrait-placeholder.png";
