@@ -29,7 +29,7 @@ function createUserCard(user, category = "users") {
 	}
 
 	userCard.innerHTML = `
-<div class="status-indicator ${
+	<div class="status-indicator ${
 		user.matched === "true"
 			? "matched-symbol"
 			: user.matched === "false"
@@ -39,17 +39,19 @@ function createUserCard(user, category = "users") {
         ${user.matched === "true" ? "❤" : user.matched === "false" ? "✖" : ""}
     </div>
     <img src="${profilePicture}" alt="Profilbilde">
-    <div class="user-info">
-        <h3>${user.firstName || user.name.first} ${
-		user.lastName || user.name.last
-	}, ${user.age || user.dob.age}</h3>
-        <p>${user.city || user.location.city}, ${
+	<div class="usercard-contents">
+		<div class="user-info">
+			<h3>${user.firstName || user.name.first} ${user.lastName || user.name.last}, ${
+		user.age || user.dob.age
+	}</h3>
+			<p>${user.city || user.location.city}, ${
 		user.country || user.location.country
 	}</p>
-        <div class="usercard-buttons">
-            <!-- Knappene legges til dynamisk her -->
-        </div>
-    </div>
+		</div>
+		<div class="usercard-buttons">
+			<!-- Knappene legges til dynamisk her -->
+		</div>
+	</div>
 `;
 
 	const buttonContainer = userCard.querySelector(".usercard-buttons");
@@ -87,12 +89,18 @@ function createEditButton(user) {
 	editButton.classList.add("edit-button");
 
 	editButton.addEventListener("click", () => {
-		const profileContainer = document.getElementById("profile");
+		const profileContainer = document.getElementById("profile-container");
 		const editContainer = document.getElementById("edit-profile-container");
+		const profileHeader = document.getElementById("profile-header");
+		const editProfileHeader = document.getElementById(
+			"edit-profile-header"
+		);
 		const editForm = document.getElementById("edit-profile-form");
 
 		profileContainer.style.display = "none";
-		editContainer.style.display = "block";
+		editContainer.style.display = "flex";
+		profileHeader.style.display = "none";
+		editProfileHeader.style.display = "flex";
 
 		populateEditForm(user);
 		handleProfilePicturePreview(user);
@@ -100,10 +108,14 @@ function createEditButton(user) {
 		editForm.onsubmit = async (event) => {
 			event.preventDefault();
 			await handleFormSubmit(user, editContainer, profileContainer);
+			profileHeader.style.display = "block";
+			editProfileHeader.style.display = "none";
 		};
 		document.getElementById("cancel-edit").addEventListener("click", () => {
 			editContainer.style.display = "none";
 			profileContainer.style.display = "block";
+			profileHeader.style.display = "block";
+			editProfileHeader.style.display = "none";
 		});
 	});
 	return editButton;
@@ -186,7 +198,9 @@ function createFavoriteButton(user, userCard) {
 			const favorites = await getFavorites();
 			if (favorites && favorites.length > 0) {
 				const newestFavorite = favorites[favorites.length - 1];
-				const favoriteList = document.getElementById("favorites");
+				const favoriteList = document.getElementById(
+					"favorites-container"
+				);
 				console.log("Kaller notifyOfMutualMatch for:", newestFavorite);
 				notifyOfMutualMatch(newestFavorite, favoriteList);
 			} else {
@@ -240,17 +254,34 @@ function handleProfilePicturePreview(user) {
 		"edit-profile-picture-preview"
 	);
 	const profilePictureInput = document.getElementById("edit-profile-picture");
-	if (user.profilePicture && !user.profilePicture.startsWith("data:image/")) {
-		profilePicturePreview.src = `data:image/jpeg;base64,${user.profilePicture}`;
+	if (user.profilePicture) {
+		if (user.profilePicture.startsWith("data:image/")) {
+			profilePicturePreview.src = user.profilePicture;
+		} else {
+			profilePicturePreview.src = `data:image/jpeg;base64,${user.profilePicture}`;
+		}
 	} else {
-		profilePicturePreview.src =
-			user.profilePicture || "./assets/portrait-placeholder.png";
+		profilePicturePreview.src = "./assets/portrait-placeholder.png";
 	}
 	profilePictureInput.addEventListener("change", (event) => {
 		const file = event.target.files[0];
 		if (file) {
-			profilePicturePreview.src = "";
-			profilePicturePreview.style.display = "none";
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				profilePicturePreview.src = e.target.result;
+				profilePicturePreview.style.display = "block";
+			};
+			reader.readAsDataURL(file);
+		} else {
+			if (user.profilePicture) {
+				if (user.profilePicture.startsWith("data:image/")) {
+					profilePicturePreview.src = user.profilePicture;
+				} else {
+					profilePicturePreview.src = `data:image/jpeg;base64,${user.profilePicture}`;
+				}
+			} else {
+				profilePicturePreview.src = "./assets/portrait-placeholder.png";
+			}
 		}
 	});
 }
@@ -390,7 +421,7 @@ async function showFavorites() {
 				"<p>Ingen favoritter funnet. Er du kanskje litt kresen?</p>";
 			return;
 		}
-		const favoriteList = document.getElementById("favorites");
+		const favoriteList = document.getElementById("favorites-container");
 		favoriteList.innerHTML = "";
 		favorites.reverse().forEach((user) => {
 			const userCard = createUserCard(user, "favorites");
@@ -457,7 +488,6 @@ function notifyOfMutualMatch(favorite, favoriteList) {
 		}
 	}, randomDelay);
 }
-// 🗩/🗨/✉ chat button for mutual match
 
 function createMessageButton(user) {
 	const messageButton = document.createElement("button");
@@ -487,23 +517,18 @@ function createMessageButton(user) {
 
 // === INIT === //
 
-// window.addEventListener("DOMContentLoaded", async () => {
-// 	try {
-// 		const loggedInProfile = await getProfile();
-// 		if (!loggedInProfile) {
-// 			throw new Error("Ingen bruker er logget inn.");
-// 		}
-// 		showProfile();
-// 		handleFilters();
-// 		showPotentialMatch();
-// 		showFavorites();
-// 	} catch (error) {
-// 		alert("Du må være logget inn for å få tilgang til denne siden.");
-// 		window.location.href = "index.html";
-// 	}
-// });
-
-showProfile();
-handleFilters();
-showPotentialMatch();
-showFavorites();
+window.addEventListener("DOMContentLoaded", async () => {
+	try {
+		const loggedInProfile = await getProfile();
+		if (!loggedInProfile) {
+			throw new Error("Ingen bruker er logget inn.");
+		}
+		showProfile();
+		handleFilters();
+		showPotentialMatch();
+		showFavorites();
+	} catch (error) {
+		alert("Du må være logget inn for å få tilgang til denne siden.");
+		window.location.href = "index.html";
+	}
+});

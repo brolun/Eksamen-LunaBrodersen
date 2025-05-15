@@ -54,7 +54,8 @@ footer {
 
 .usercard,
 #login-container,
-#register-container {
+#register-container,
+#edit-profile-container {
 	background-color: white;
 	border: 1px solid gainsboro;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -94,19 +95,22 @@ input:focus {
 	margin-bottom: 40px;
 }
 #register-container,
-#login-container {
+#login-container,
+#edit-profile-container {
 	align-items: center;
 	flex-direction: column;
 	padding: 10px 30px;
 }
 #register-container .form-group,
-#login-container .form-group {
+#login-container .form-group,
+#edit-profile-container .form-group {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
 	text-align: left;
 	margin-bottom: 15px;
 }
+#edit-profile-picture-preview,
 #profile-preview {
 	margin: 0 auto;
 	width: 150px;
@@ -124,6 +128,9 @@ input:focus {
 	position: absolute;
 	z-index: -1;
 }
+#file-name {
+	display: none;
+}
 
 /* === BRUKERKORT === */
 
@@ -136,7 +143,10 @@ input:focus {
 	justify-content: left;
 	max-width: fit-content;
 }
-#profile-contents {
+#profile-container .usercard-contents {
+	justify-content: space-between;
+}
+.usercard-contents {
 	display: flex;
 	flex-direction: column;
 }
@@ -144,7 +154,7 @@ input:focus {
 	height: 100px;
 	width: 100px;
 }
-#profile-contents h3 {
+#profile-container h3 {
 	margin-top: 0;
 }
 #match-suggestion .usercard,
@@ -167,8 +177,7 @@ input:focus {
 }
 .user-info p {
 	color: dimgray;
-	margin-bottom: 10px;
-	margin: 2px;
+	margin: 2px 0 10px;
 }
 #favorites-container {
 	display: flex;
@@ -206,9 +215,11 @@ form button:hover,
 .message-button:hover {
 	background-color: seagreen;
 }
+#cancel-edit,
 .delete-button {
 	background-color: dimgray;
 }
+#cancel-edit:hover,
 .delete-button:hover {
 	background-color: black;
 }
@@ -218,11 +229,11 @@ form button {
 	margin-top: 15px;
 	padding: 10px;
 }
-#profile-contents .usercard-buttons {
+#profile-container .usercard-buttons {
 	display: flex;
 	gap: 10px;
 }
-#profile-contents .usercard-buttons button {
+#profile-container .usercard-buttons button {
 	border: none;
 	padding: 8px;
 }

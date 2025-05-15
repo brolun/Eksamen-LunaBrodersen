@@ -14,72 +14,129 @@
 		</header>
 		<main>
 			<section>
-				<h2>Din profil</h2>
+				<h2 id="profile-header">Din profil</h2>
+
 				<div id="profile-container">
 					<!-- Profilkort legges inn her med JS -->
-					<div class="usercard">
-						<img src="./assets/portrait-placeholder.png" alt="" />
-						<div id="profile-contents">
-							<div class="user-info">
-								<h3>John Doe, 89</h3>
-								<p>Paris, Texas</p>
+				</div>
+				<div id="edit-profile-container" style="display: none">
+					<h2 id="edit-profile-header" style="display: none">
+						Rediger profil
+					</h2>
+					<form id="edit-profile-form">
+						<div class="form-row">
+							<div class="form-group">
+								<label
+									for="edit-profile-picture"
+									class="custom-file-label"
+								>
+									<img
+										id="edit-profile-picture-preview"
+										src="./assets/portrait-placeholder.png"
+										alt="Forhåndsvisning av profilbilde"
+										class="profile-preview"
+									/>
+								</label>
+								<input
+									type="file"
+									id="edit-profile-picture"
+									class="custom-file-input"
+									accept="image/*"
+								/><span id="file-name">Ingen fil valgt</span>
 							</div>
-							<div class="usercard-buttons">
-								<button class="edit-button">Rediger</button>
-								<button class="logout-button">Logg ut</button>
-								<button class="delete-button">
-									Slett profil
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-first-name">Fornavn:</label>
+								<input
+									type="text"
+									id="edit-first-name"
+									name="first-name"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-last-name">Etternavn:</label>
+								<input
+									type="text"
+									id="edit-last-name"
+									name="last-name"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-city">By:</label>
+								<input
+									type="text"
+									id="edit-city"
+									name="city"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-country">Land:</label>
+								<input
+									type="text"
+									id="edit-country"
+									name="country"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-age">Alder:</label>
+								<input
+									type="number"
+									id="edit-age"
+									name="age"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-gender">Kjønn:</label>
+								<select id="edit-gender" name="gender" required>
+									<option value="" disabled selected>
+										Velg kjønn
+									</option>
+									<option value="male">Mann</option>
+									<option value="female">Dame</option>
+									<option value="non-binary">
+										Ikke-binær
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-username">Brukernavn:</label>
+								<input
+									type="text"
+									id="edit-username"
+									name="username"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-password">Passord:</label>
+								<input
+									type="password"
+									id="edit-password"
+									name="password"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<button type="submit">Lagre</button>
+								<button type="button" id="cancel-edit">
+									Avbryt
 								</button>
 							</div>
 						</div>
-					</div>
-				</div>
-				<div id="edit-profile-container" style="display: none">
-					<h3>Rediger profil</h3>
-					<form id="edit-profile-form">
-						<img
-							id="edit-profile-picture-preview"
-							src=""
-							alt="Profilbilde"
-							style="
-								max-width: 150px;
-								display: block;
-								margin-top: 10px;
-							"
-						/>
-						<label for="edit-profile-picture">Profilbilde:</label>
-						<input
-							type="file"
-							id="edit-profile-picture"
-							accept="image/*"
-						/>
-						<br />
-						<label for="edit-first-name">Fornavn:</label>
-						<input type="text" id="edit-first-name" />
-						<label for="edit-last-name">Etternavn:</label>
-						<input type="text" id="edit-last-name" />
-						<br />
-						<label for="edit-city">By:</label>
-						<input type="text" id="edit-city" />
-						<label for="edit-country">Land:</label>
-						<input type="text" id="edit-country" />
-						<br />
-						<label for="edit-age">Alder:</label>
-						<input type="number" id="edit-age" />
-						<label for="edit-gender">Kjønn:</label>
-						<select id="edit-gender">
-							<option value="male">Mann</option>
-							<option value="female">Dame</option>
-							<option value="non-binary">Ikke-binær</option>
-						</select>
-						<br />
-						<label for="edit-username">Brukernavn:</label>
-						<input type="text" id="edit-username" />
-						<label for="edit-password">Passord:</label>
-						<input type="password" id="edit-password" />
-						<br />
-						<button type="submit">Lagre</button>
-						<button type="button" id="cancel-edit">Avbryt</button>
 					</form>
 				</div>
 			</section>
