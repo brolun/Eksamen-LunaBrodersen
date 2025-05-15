@@ -5,13 +5,11 @@
 }
 body {
 	align-items: center;
-	background-color: #f5f5f5;
-	color: #333333;
 	display: flex;
 	flex-direction: column;
 	font-family: Arial, Helvetica, sans-serif;
 	justify-content: center;
-	text-align: center;
+	margin: 0;
 	transition: transform 0.2s ease;
 	width: 100vw;
 }
@@ -20,58 +18,99 @@ header {
 	display: flex;
 	gap: 20px;
 	justify-content: center;
-	margin: 0 auto 30px;
-	text-align: center;
-	width: 100vw;
 }
-:is(h1, h2, h3) {
-	color: #ff6f91;
+h1,
+h2 {
+	color: deeppink;
 }
 header h2 {
-	color: #d95380;
+	color: purple;
+}
+h3 {
+	margin-bottom: 0;
+}
+section {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin: 40px;
 }
 a {
-	color: #ff6f91;
+	color: purple;
 	text-decoration: none;
 }
 a:hover {
 	text-decoration: underline;
 }
+img {
+	object-fit: cover;
+}
 footer {
-	margin-top: 50px;
+	margin-top: 40px;
 }
 
-/* === KNAPPER === */
+/* === KORT === */
+
+.usercard,
+#login-container,
+#register-container,
+#edit-profile-container {
+	background-color: white;
+	border: 1px solid gainsboro;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	display: flex;
+}
 
 /* === SKJEMAER === */
 
-#register-container,
-#login-container {
-	display: flex;
-	align-items: center;
-	border-radius: 10px;
-	flex-direction: column;
-	padding: 10px 30px;
-	background-color: white;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
 form {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
 	width: 100%;
+}
+label {
+	color: dimgray;
+}
+input,
+select {
+	background-color: white;
+	border: 1px solid gainsboro;
+	font-size: 1rem;
+	padding: 8px;
+}
+input:focus {
+	border-color: deeppink;
+	outline: none;
 }
 .form-row {
 	display: flex;
-	gap: 10px;
-	margin-bottom: 12px;
+	gap: 15px;
 }
-.form-group {
+#criteria-container {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-bottom: 40px;
+}
+#register-container,
+#login-container,
+#edit-profile-container {
+	align-items: center;
+	flex-direction: column;
+	padding: 10px 30px;
+}
+#register-container .form-group,
+#login-container .form-group,
+#edit-profile-container .form-group {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
 	text-align: left;
+	margin-bottom: 15px;
 }
+#edit-profile-picture-preview,
 #profile-preview {
 	margin: 0 auto;
 	width: 150px;
@@ -82,90 +121,124 @@ form {
 	transform: scale(1.1);
 	cursor: pointer;
 }
-
-.custom-file-input {
-	opacity: 0;
-	position: absolute;
-	z-index: -1;
-}
-input,
-select {
-	background-color: white;
-	border-radius: 4px;
-	border: 1px solid #ff6f61;
-	padding: 8px;
-	color: #333333;
-	font-size: 1rem;
-}
-input:focus {
-	outline: none;
-	border-color: #d95380;
-}
-
-.custom-file-input {
-	opacity: 0;
-	position: absolute;
-	z-index: -1;
-}
 .custom-file-label {
-	display: inline-block;
-	color: white;
-	border-radius: 4px;
-	cursor: pointer;
 	text-align: center;
-	font-size: 1rem;
 }
-button {
-	/* background-color: #ff6f61; */
-	border-radius: 4px;
-	border: none;
-	cursor: pointer;
-	font-size: 1rem;
-	margin-top: 10px;
-	padding: 10px;
-	color: white;
+.custom-file-input {
+	position: absolute;
+	z-index: -1;
 }
-button:hover {
-	background-color: #d95380;
+#file-name {
+	display: none;
 }
 
 /* === BRUKERKORT === */
 
-.user-card {
-	position: relative;
-	max-width: 270px;
+.usercard {
+	padding: 10px;
+	gap: 10px;
+}
+#profile-container .usercard {
+	flex-direction: row;
+	justify-content: left;
+	max-width: fit-content;
+}
+#profile-container .usercard-contents {
+	justify-content: space-between;
+}
+.usercard-contents {
 	display: flex;
 	flex-direction: column;
-	background-color: white;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+#profile-container img {
+	height: 100px;
+	width: 100px;
+}
+#profile-container h3 {
+	margin-top: 0;
+}
+#match-suggestion .usercard,
+#favorites-container .usercard {
+	flex-direction: column;
 	margin: 10px;
-	padding: 10px;
-	gap: 15px;
-	border: 1px solid #e0e0e0;
+	max-width: 270px;
+	position: relative;
 }
-.user-card h3 {
-	margin-bottom: 0;
-	color: #333333;
-}
-
-.user-card img {
+#match-suggestion img,
+#favorites-container img {
 	height: 300px;
 	width: 250px;
-	object-fit: cover;
 }
-
-.user-card .user-info {
+.user-info {
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
 	flex: 1;
 }
 .user-info p {
-	margin: 2px;
-	color: #555555;
+	color: dimgray;
+	margin: 2px 0 10px;
+}
+#favorites-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	justify-content: center;
+	margin: auto;
+	overflow: visible;
 }
 
-.usercard-buttons {
+/* === KNAPPER === */
+
+button {
+	cursor: pointer;
+	color: white;
+}
+button:hover {
+	transform: scale(1.1);
+}
+form button,
+.logout-button,
+.yes-button {
+	background-color: deeppink;
+}
+form button:hover,
+.logout-button:hover,
+.yes-button:hover {
+	background-color: purple;
+}
+.edit-button,
+.message-button {
+	background-color: mediumturquoise;
+}
+.edit-button:hover,
+.message-button:hover {
+	background-color: seagreen;
+}
+#cancel-edit,
+.delete-button {
+	background-color: dimgray;
+}
+#cancel-edit:hover,
+.delete-button:hover {
+	background-color: black;
+}
+form button {
+	border: none;
+	font-size: 1rem;
+	margin-top: 15px;
+	padding: 10px;
+}
+#profile-container .usercard-buttons {
+	display: flex;
+	gap: 10px;
+}
+#profile-container .usercard-buttons button {
+	border: none;
+	padding: 8px;
+}
+#match-suggestion .usercard-buttons,
+#favorites-container .usercard-buttons {
 	position: absolute;
 	top: 285px;
 	display: flex;
@@ -175,8 +248,8 @@ button:hover {
 	justify-content: center;
 	align-items: center;
 }
-
-.usercard-buttons button {
+#match-suggestion .usercard-buttons button,
+#favorites-container .usercard-buttons button {
 	width: 50px;
 	height: 50px;
 	border-radius: 50%;
@@ -189,75 +262,45 @@ button:hover {
 	justify-content: center;
 	font-size: x-large;
 	margin: 0;
-	border: 2px solid white;
+	border: 3px solid white;
 	line-height: 1;
-}
-.next-match-button,
-.delete-favorite-button {
-	background-color: #333333;
-}
-.next-match-button:hover,
-.delete-favorite-button:hover {
-	background-color: #000000;
-}
-.yes-button {
-	background-color: #ff6f61;
-}
-.yes-button:hover {
-	background-color: #d95380;
-}
-.message-button {
-	background-color: #4dc3c9;
-}
-.message-button:hover {
-	background-color: #3ba6ab;
 }
 
+/* === GJENSIDIG MATCH === */
+
 .status-indicator {
-	position: absolute;
 	font-size: 3rem;
-	z-index: 2;
-	pointer-events: none;
-	top: 0;
 	line-height: 1;
+	pointer-events: none;
+	position: absolute;
+	top: 0;
 	top: 15px;
+	z-index: 2;
 }
 .not-matched-symbol {
-	left: 15px;
-	color: rgba(0, 0, 0, 0.7);
+	align-items: center;
 	background-color: rgba(255, 255, 255, 0.4);
 	border-radius: 50%;
-	width: 50px;
-	height: 50px;
+	color: rgba(0, 0, 0, 0.7);
 	display: flex;
-	align-items: center;
+	height: 50px;
 	justify-content: center;
+	left: 15px;
+	width: 50px;
 }
 .matched-symbol {
 	right: 15px;
-	color: #ff6f91;
+	color: deeppink;
 	animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
-	0% {
+	0%,
+	100% {
 		transform: scale(1);
-		opacity: 1;
+		opacity: 0.6;
 	}
 	50% {
 		transform: scale(1.2);
-		opacity: 0.8;
-	}
-	100% {
-		transform: scale(1);
 		opacity: 1;
 	}
-}
-
-#favorites {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-	margin: auto;
-	overflow: visible;
-	justify-content: center;
 }

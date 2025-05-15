@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>LoveLink &mdash; Der hjerter kobles</title>
 		<link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="styles.css" />
 	</head>
@@ -12,61 +12,141 @@
 			<h1>LoveLink</h1>
 			<h2>&mdash; Der hjerter kobles 💕</h2>
 		</header>
+		<main>
+			<section>
+				<h2 id="profile-header">Din profil</h2>
 
-		<h2>Din profil</h2>
-		<div id="profile">
-			<!-- Profilkort legges inn her med JS -->
-		</div>
-		<div id="edit-profile-container" style="display: none">
-			<h3>Rediger profil</h3>
-			<form id="edit-profile-form">
-				<img
-					id="edit-profile-picture-preview"
-					src=""
-					alt="Profilbilde"
-					style="max-width: 150px; display: block; margin-top: 10px"
-				/>
-				<label for="edit-profile-picture">Profilbilde:</label>
-				<input type="file" id="edit-profile-picture" accept="image/*" />
-				<br />
-				<label for="edit-first-name">Fornavn:</label>
-				<input type="text" id="edit-first-name" />
-				<label for="edit-last-name">Etternavn:</label>
-				<input type="text" id="edit-last-name" />
-				<br />
-				<label for="edit-city">By:</label>
-				<input type="text" id="edit-city" />
-				<label for="edit-country">Land:</label>
-				<input type="text" id="edit-country" />
-				<br />
-				<label for="edit-age">Alder:</label>
-				<input type="number" id="edit-age" />
-				<label for="edit-gender">Kjønn:</label>
-				<select id="edit-gender">
-					<option value="male">Mann</option>
-					<option value="female">Dame</option>
-					<option value="non-binary">Ikke-binær</option>
-				</select>
-				<br />
-				<label for="edit-username">Brukernavn:</label>
-				<input type="text" id="edit-username" />
-				<label for="edit-password">Passord:</label>
-				<input type="password" id="edit-password" />
-				<br />
-				<button type="submit">Lagre</button>
-				<button type="button" id="cancel-edit">Avbryt</button>
-			</form>
-		</div>
+				<div id="profile-container">
+					<!-- Profilkort legges inn her med JS -->
+				</div>
+				<div id="edit-profile-container" style="display: none">
+					<h2 id="edit-profile-header" style="display: none">
+						Rediger profil
+					</h2>
+					<form id="edit-profile-form">
+						<div class="form-row">
+							<div class="form-group">
+								<label
+									for="edit-profile-picture"
+									class="custom-file-label"
+								>
+									<img
+										id="edit-profile-picture-preview"
+										src="./assets/portrait-placeholder.png"
+										alt="Forhåndsvisning av profilbilde"
+										class="profile-preview"
+									/>
+								</label>
+								<input
+									type="file"
+									id="edit-profile-picture"
+									class="custom-file-input"
+									accept="image/*"
+								/><span id="file-name">Ingen fil valgt</span>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-first-name">Fornavn:</label>
+								<input
+									type="text"
+									id="edit-first-name"
+									name="first-name"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-last-name">Etternavn:</label>
+								<input
+									type="text"
+									id="edit-last-name"
+									name="last-name"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-city">By:</label>
+								<input
+									type="text"
+									id="edit-city"
+									name="city"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-country">Land:</label>
+								<input
+									type="text"
+									id="edit-country"
+									name="country"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-age">Alder:</label>
+								<input
+									type="number"
+									id="edit-age"
+									name="age"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-gender">Kjønn:</label>
+								<select id="edit-gender" name="gender" required>
+									<option value="" disabled selected>
+										Velg kjønn
+									</option>
+									<option value="male">Mann</option>
+									<option value="female">Dame</option>
+									<option value="non-binary">
+										Ikke-binær
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="edit-username">Brukernavn:</label>
+								<input
+									type="text"
+									id="edit-username"
+									name="username"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="edit-password">Passord:</label>
+								<input
+									type="password"
+									id="edit-password"
+									name="password"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<button type="submit">Lagre</button>
+								<button type="button" id="cancel-edit">
+									Avbryt
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</section>
 
-		<h2>Ditt neste match?</h2>
-
-		<p>Filtrer etter:</p>
-		<div id="match-filters">
-			<div class="form-row">
-				<div id="gender-sort">
+			<section>
+				<h2>Din neste match?</h2>
+				<div id="criteria-container">
 					<div class="form-group">
-						<label for="gender-select">Kjønn:</label>
-						<select id="gender-select">
+						<label for="gender-select">Foretrukket kjønn:</label>
+						<select id="gender-select" class="styled-select">
 							<option value="" disabled selected>
 								Velg kjønn
 							</option>
@@ -75,40 +155,39 @@
 							<option value="whatever">Jeg liker alle 😉</option>
 						</select>
 					</div>
-				</div>
-				<div id="age-sort">
 					<div class="form-group">
-						<label for="age-range">Alder:</label>
-						<select id="age-range">
+						<label for="age-range">Foretrukket alder:</label>
+						<select id="age-range" class="styled-select">
 							<option value="" disabled selected>
 								Velg aldersintervall
 							</option>
-							<option value="20-29">20-29</option>
-							<option value="30-39">30-39</option>
-							<option value="40-49">40-49</option>
-							<option value="50-59">50-59</option>
-							<option value="60-69">60-69</option>
-							<option value="70-79">70-79</option>
-							<option value="80-89">80-89</option>
-							<option value="90-99">90-99</option>
+							<option value="20-29">20-29 år</option>
+							<option value="30-39">30-39 år</option>
+							<option value="40-49">40-49 år</option>
+							<option value="50-59">50-59 år</option>
+							<option value="60-69">60-69 år</option>
+							<option value="70-79">70-79 år</option>
+							<option value="80-89">80-89 år</option>
+							<option value="90-99">90-99 år</option>
 							<option value="whatever">
 								Alder er bare et tall 😉
 							</option>
 						</select>
 					</div>
 				</div>
-			</div>
-		</div>
+				<div id="match-suggestion">
+					<!-- Forslag til match legges inn her med JS -->
+				</div>
+			</section>
 
-		<div id="match-suggestion">
-			<!-- Forslag til match legges inn her med JS -->
-		</div>
-
-		<h2>Dine favoritter</h2>
-		<div id="favorites">
-			<!-- Oversikt over favoritter legges inn her med JS -->
-		</div>
-
+			<section>
+				<h2>Dine favoritter</h2>
+				<div id="favorites-container">
+					<!-- Oversikt over favoritter legges inn her med JS -->
+				</div>
+			</section>
+		</main>
+		<footer></footer>
 		<script type="module" src="home.js"></script>
 	</body>
 </html>
