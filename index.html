@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>LoveLink &mdash; Der hjerter kobles</title>
 		<link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="styles.css" />
 	</head>
@@ -13,143 +13,154 @@
 			<h2>&mdash; Der hjerter kobles 💕</h2>
 		</header>
 		<main>
-			<!-- Innloggingsskjema (skjult som standard) -->
-			<div id="login-container" style="display: none">
-				<h2>Logg inn</h2>
-				<form id="login-form">
-					<div class="form-group">
-						<label for="username">Brukernavn:</label>
-						<input
-							type="text"
-							id="username"
-							name="username"
-							required
-						/>
-					</div>
-					<div class="form-group">
-						<label for="password">Passord:</label>
-						<input
-							type="password"
-							id="password"
-							name="password"
-							required
-						/>
-					</div>
-					<button type="submit">Logg inn</button>
-				</form>
-				<p>
-					Har du ikke en bruker?
-					<a href="#" id="go-to-register">Gå til registrering</a>
-				</p>
-			</div>
-
-			<!-- Registreringsskjema (vises som standard) -->
-			<div id="register-container">
-				<h2>Registrer deg</h2>
-				<form id="new-user-form">
-					<div class="form-row">
+			<section>
+				<!-- Innloggingsskjema (skjult som standard) -->
+				<div id="login-container" style="display: none">
+					<h2>Logg inn</h2>
+					<form id="login-form">
 						<div class="form-group">
-							<label
-								for="profile-picture"
-								class="custom-file-label"
-								><img
-									id="profile-preview"
-									src="./assets/portrait-placeholder.png"
-									alt="Forhåndsvisning av profilbilde"
-								/>
-							</label>
-							<input
-								type="file"
-								id="profile-picture"
-								class="custom-file-input"
-								accept="image/*"
-							/>
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group">
-							<label for="first-name">Fornavn:</label>
+							<label for="username">Brukernavn:</label>
 							<input
 								type="text"
-								id="first-name"
-								name="first-name"
+								id="username"
+								name="username"
 								required
 							/>
 						</div>
 						<div class="form-group">
-							<label for="last-name">Etternavn:</label>
-							<input
-								type="text"
-								id="last-name"
-								name="last-name"
-								required
-							/>
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group">
-							<label for="city">By:</label
-							><input
-								type="text"
-								id="city"
-								name="city"
-								required
-							/>
-						</div>
-						<div class="form-group">
-							<label for="country">Land:</label>
-							<input
-								type="text"
-								id="country"
-								name="country"
-								required
-							/>
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group">
-							<label for="age">Alder:</label>
-							<input type="number" id="age" name="age" required />
-						</div>
-						<div class="form-group">
-							<label for="gender-select">Kjønn:</label>
-							<select id="gender-select">
-								<option value="" disabled selected>
-									Velg kjønn
-								</option>
-								<option value="female">Dame</option>
-								<option value="male">Mann</option>
-								<option value="non-binary">Ikke-binær</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group">
-							<label for="new-username">Brukernavn:</label>
-							<input
-								type="text"
-								id="new-username"
-								name="new-username"
-								required
-							/>
-						</div>
-						<div class="form-group">
-							<label for="new-password">Passord:</label>
+							<label for="password">Passord:</label>
 							<input
 								type="password"
-								id="new-password"
-								name="new-password"
+								id="password"
+								name="password"
 								required
 							/>
 						</div>
-					</div>
-					<button type="submit">Opprett bruker</button>
-				</form>
-				<p>
-					Har du en bruker?
-					<a href="#" id="go-to-login">Gå til logg inn</a>
-				</p>
-			</div>
+						<button type="submit">Logg inn</button>
+					</form>
+					<p>
+						Har du ikke en bruker?
+						<a href="#" id="go-to-register">Gå til registrering</a>
+					</p>
+				</div>
+			</section>
+
+			<section>
+				<!-- Registreringsskjema (vises som standard) -->
+				<div id="register-container">
+					<h2>Registrer deg</h2>
+					<form id="new-user-form">
+						<div class="form-row">
+							<div class="form-group">
+								<label
+									for="profile-picture"
+									class="custom-file-label"
+									><img
+										id="profile-preview"
+										src="./assets/portrait-placeholder.png"
+										alt="Forhåndsvisning av profilbilde"
+									/>
+								</label>
+								<input
+									type="file"
+									id="profile-picture"
+									class="custom-file-input"
+									accept="image/*"
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="first-name">Fornavn:</label>
+								<input
+									type="text"
+									id="first-name"
+									name="first-name"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="last-name">Etternavn:</label>
+								<input
+									type="text"
+									id="last-name"
+									name="last-name"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="city">By:</label
+								><input
+									type="text"
+									id="city"
+									name="city"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="country">Land:</label>
+								<input
+									type="text"
+									id="country"
+									name="country"
+									required
+								/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="age">Alder:</label>
+								<input
+									type="number"
+									id="age"
+									name="age"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="gender-select">Kjønn:</label>
+								<select id="gender-select">
+									<option value="" disabled selected>
+										Velg kjønn
+									</option>
+									<option value="female">Dame</option>
+									<option value="male">Mann</option>
+									<option value="non-binary">
+										Ikke-binær
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label for="new-username">Brukernavn:</label>
+								<input
+									type="text"
+									id="new-username"
+									name="new-username"
+									required
+								/>
+							</div>
+							<div class="form-group">
+								<label for="new-password">Passord:</label>
+								<input
+									type="password"
+									id="new-password"
+									name="new-password"
+									required
+								/>
+							</div>
+						</div>
+						<button type="submit">Opprett bruker</button>
+					</form>
+					<p>
+						Har du en bruker?
+						<a href="#" id="go-to-login">Gå til logg inn</a>
+					</p>
+				</div>
+			</section>
 		</main>
 		<footer></footer>
 		<script type="module" src="index.js"></script>

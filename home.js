@@ -11,7 +11,7 @@ import { resizeImage } from "./requests/utils.js";
 function createUserCard(user, category = "users") {
 	console.log("Oppretter brukerens kort for:", user.name, category);
 	const userCard = document.createElement("div");
-	userCard.classList.add("user-card");
+	userCard.classList.add("usercard");
 
 	if (category === "favorites" && user.matched !== "") {
 		userCard.classList.add(
@@ -210,7 +210,7 @@ async function showProfile() {
 		if (!loggedInProfile) {
 			return;
 		}
-		const profileContainer = document.getElementById("profile");
+		const profileContainer = document.getElementById("profile-container");
 		if (!profileContainer) {
 			return;
 		}
@@ -385,7 +385,7 @@ async function showFavorites() {
 	try {
 		const favorites = await getFavorites();
 		if (!favorites || favorites.length === 0) {
-			const favoriteList = document.getElementById("favorites");
+			const favoriteList = document.getElementById("favorites-container");
 			favoriteList.innerHTML = "<p>Ingen favoritter funnet.</p>";
 			return;
 		}
@@ -486,18 +486,23 @@ function createMessageButton(user) {
 
 // === INIT === //
 
-window.addEventListener("DOMContentLoaded", async () => {
-	try {
-		const loggedInProfile = await getProfile();
-		if (!loggedInProfile) {
-			throw new Error("Ingen bruker er logget inn.");
-		}
-		showProfile();
-		handleFilters();
-		showPotentialMatch();
-		showFavorites();
-	} catch (error) {
-		alert("Du må være logget inn for å få tilgang til denne siden.");
-		window.location.href = "index.html";
-	}
-});
+// window.addEventListener("DOMContentLoaded", async () => {
+// 	try {
+// 		const loggedInProfile = await getProfile();
+// 		if (!loggedInProfile) {
+// 			throw new Error("Ingen bruker er logget inn.");
+// 		}
+// 		showProfile();
+// 		handleFilters();
+// 		showPotentialMatch();
+// 		showFavorites();
+// 	} catch (error) {
+// 		alert("Du må være logget inn for å få tilgang til denne siden.");
+// 		window.location.href = "index.html";
+// 	}
+// });
+
+showProfile();
+handleFilters();
+showPotentialMatch();
+showFavorites();
