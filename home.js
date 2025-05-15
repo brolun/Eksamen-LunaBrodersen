@@ -218,7 +218,7 @@ async function showProfile() {
 		profileContainer.innerHTML = "";
 		profileContainer.appendChild(userCard);
 	} catch (error) {
-		console.error("Feil med funksjonen showProfile:", error);
+		console.error("Klarte ikke å vise profilen", error);
 	}
 }
 
@@ -284,9 +284,9 @@ async function handleFormSubmit(user, editContainer, profileContainer) {
 		editContainer.style.display = "none";
 		profileContainer.style.display = "block";
 		showProfile();
-		alert("Profilen ble oppdatert!");
+		alert("Din brukerprofil ble oppdatert!");
 	} catch (error) {
-		alert("Kunne ikke oppdatere profilen. Prøv igjen senere.");
+		alert("Din brukerprofil kunne ikke oppdateres. Prøv igjen senere.");
 	}
 }
 
@@ -338,7 +338,7 @@ async function showPotentialMatch() {
 
 		const users = await getUsers();
 		if (!users || users.length === 0) {
-			potentialMatch.innerHTML = `<p>Ingen brukere tilgjengelig.</p>`;
+			potentialMatch.innerHTML = `<p>Ingen brukere funnet. Ta deg en tur på byen heller.</p>`;
 			return;
 		}
 
@@ -363,7 +363,7 @@ async function showPotentialMatch() {
 			);
 		}
 		if (filteredUsers.length === 0) {
-			potentialMatch.innerHTML = `<p>Ingen brukere matcher dine kriterier.</p>`;
+			potentialMatch.innerHTML = `<p>Ingen brukere matcher dine kriterier. Er du kanskje litt kresen?</p>`;
 			return;
 		}
 
@@ -386,7 +386,8 @@ async function showFavorites() {
 		const favorites = await getFavorites();
 		if (!favorites || favorites.length === 0) {
 			const favoriteList = document.getElementById("favorites-container");
-			favoriteList.innerHTML = "<p>Ingen favoritter funnet.</p>";
+			favoriteList.innerHTML =
+				"<p>Ingen favoritter funnet. Er du kanskje litt kresen?</p>";
 			return;
 		}
 		const favoriteList = document.getElementById("favorites");
