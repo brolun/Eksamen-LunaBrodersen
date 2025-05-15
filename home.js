@@ -532,3 +532,13 @@ window.addEventListener("DOMContentLoaded", async () => {
 		window.location.href = "index.html";
 	}
 });
+
+// === EKSPORT === //
+
+export {
+	populateEditForm,
+	handleFilters,
+	createFavoriteButton,
+	createMessageButton,
+	notifyOfMutualMatch,
+};
